@@ -3,9 +3,9 @@
 ##### 创建初始化
 
 ```python
-$ hexo init <folder>	# 初始化project
+$ hexo init <folder>  # 初始化project
 $ cd <folder> 
-$ npm install					# 安装nodejs配置文件
+$ npm install  # 安装nodejs配置文件
 ```
 
 >`hexo init <folder>`本命令相当于执行了以下几步：
@@ -53,10 +53,10 @@ hexo new [layout] <title>
 hexo new page -p about/me "About me"  # 新建 source/about/me.md 文件，标题为"About me"
 hexo publish [layout] <filename>  # 发布一个草稿，草稿储存在 source/_drafts
 '''
-<title>		是必须的
--p, --path		指定路径
--r, --replace		替换当前页面
--s, --slug		指定页面 url
+<title>  是必须的
+-p, --path  指定路径
+-r, --replace  替换当前页面
+-s, --slug  指定页面 url
 '''
 ```
 
@@ -89,6 +89,12 @@ hexo deploy
 -g, --generate	部署前生成
 '''
 ```
+
+> 部署流程：
+>
+> 1. `hexo clean`：清楚缓存文件和已生成静态文件
+> 2. `hexo g`：生成静态文件(会在目录下生成一个 `public` 文件夹，这是用于展示的网页)
+> 3. `hexo d`：部署(将 `public` 部署到 github 上)
 
 ##### 查看
 
