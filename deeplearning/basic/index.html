@@ -19,21 +19,24 @@
   <meta name="author" content="Kent">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
-<meta property="og:title" content="Python">
-<meta property="og:url" content="https://guokent.github.io/developnotes/python/index.html">
+    <meta name="description" content="常用激活函数1. sigmoid: \sigma (x) &#x3D; \frac{1}{1+e^{-x}}优点： 平滑且连续，适合二分类任务，具有明确的生物意义缺点： 输入绝对值过大时有梯度消失问题，输出大多集中在 0 和 1，可能导致网络的权重更新不平衡。指数运算效率较慢 2. Tanh Tanh(x) &#x3D; \frac{e^x-e^{-x}}{e^x+e^{-x}}优点： 输出均值为 0，收敛更快缺点：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deeplearning 基础">
+<meta property="og:url" content="https://guokent.github.io/deeplearning/basic/index.html">
 <meta property="og:site_name" content="KentGuoK">
+<meta property="og:description" content="常用激活函数1. sigmoid: \sigma (x) &#x3D; \frac{1}{1+e^{-x}}优点： 平滑且连续，适合二分类任务，具有明确的生物意义缺点： 输入绝对值过大时有梯度消失问题，输出大多集中在 0 和 1，可能导致网络的权重更新不平衡。指数运算效率较慢 2. Tanh Tanh(x) &#x3D; \frac{e^x-e^{-x}}{e^x+e^{-x}}优点： 输出均值为 0，收敛更快缺点：">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-12-30T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-02-05T15:30:53.249Z">
+<meta property="article:published_time" content="2024-10-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-02-05T15:33:01.535Z">
 <meta property="article:author" content="Kent">
-<meta property="article:tag" content="开发">
-<meta property="article:tag" content="python">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="基础">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Python - KentGuoK</title>
+  <title>Deeplearning 基础 - KentGuoK</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Python"></span>
+            <span id="subtitle" data-typed-text="Deeplearning 基础"></span>
           
         </div>
 
@@ -210,8 +213,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-12-31 00:00" pubdate>
-          2024年12月31日 凌晨
+        <time datetime="2024-10-02 00:00" pubdate>
+          2024年10月2日 凌晨
         </time>
       </span>
     
@@ -222,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          1.3k 字
         
       </span>
     
@@ -233,7 +236,7 @@
         
         
         
-          1 分钟
+          11 分钟
         
       </span>
     
@@ -270,12 +273,67 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Python</h1>
+            <h1 id="seo-header">Deeplearning 基础</h1>
             
             
               <div class="markdown-body">
                 
-                
+                <h2 id="常用激活函数"><a href="#常用激活函数" class="headerlink" title="常用激活函数"></a>常用激活函数</h2><h3 id="1-sigmoid"><a href="#1-sigmoid" class="headerlink" title="1. sigmoid:"></a>1. sigmoid:</h3><script type="math/tex; mode=display">
+\sigma (x) = \frac{1}{1+e^{-x}}</script><p><strong>优点：</strong> 平滑且连续，适合二分类任务，具有明确的生物意义<br><strong>缺点：</strong> 输入绝对值过大时有梯度消失问题，输出大多集中在 0 和 1，可能导致网络的权重更新不平衡。指数运算效率较慢</p>
+<h3 id="2-Tanh"><a href="#2-Tanh" class="headerlink" title="2. Tanh"></a>2. Tanh</h3><script type="math/tex; mode=display">
+Tanh(x) = \frac{e^x-e^{-x}}{e^x+e^{-x}}</script><p><strong>优点：</strong> 输出均值为 0，收敛更快<br><strong>缺点：</strong> 仍有梯度消失问题，计算慢</p>
+<h3 id="3-ReLU"><a href="#3-ReLU" class="headerlink" title="3. ReLU"></a>3. ReLU</h3><script type="math/tex; mode=display">
+ReLU(x) = max(x, 0)</script><p><strong>优点：</strong> 计算简单且高效，无梯度消失问题。具有稀疏性，能提高训练效率<br><strong>缺点：</strong> 对于 x&lt;0，梯度恒为 0，神经元可能“死亡”，不再更新。输出非对称：输出范围是 $[0,+\infty)$，可能导致权重更新不平衡</p>
+<h3 id="4-Softmax"><a href="#4-Softmax" class="headerlink" title="4. Softmax"></a>4. Softmax</h3><script type="math/tex; mode=display">
+f_i(x)=\frac{e^{x_i}}{\sum_j e^{x_i}}</script><p><strong>优点：</strong> 输出为概率分布，适合<strong>多分类任务</strong>。强化高分输出，抑制低分输出，具有良好的区分性。<br><strong>缺点：</strong> 对异常值敏感，可能会梯度消失</p>
+<blockquote>
+<p>通常在实际应用中，会将 softmax 的值减去最大值，目的是避免数值溢出。指数运算 e 当数值过大时会溢出。减去最大值不会影响最终结果，并且可以避免数值溢出</p>
+</blockquote>
+<h2 id="过拟合"><a href="#过拟合" class="headerlink" title="过拟合"></a>过拟合</h2><p>过拟合指，模型在训练集上的效果远远大于测试集/验证集上的效果</p>
+<h3 id="缓解方法"><a href="#缓解方法" class="headerlink" title="缓解方法"></a>缓解方法</h3><ol>
+<li>数据的角度：数据增强：图像数据就裁剪翻转等等、文本数据就是同义词替换</li>
+<li>正则化：L1/L2 正则化，在损失函数添加模型的参数，L2 是平方和，L1 是绝对值和。L2 正则化通常能避免权重过大，L1 正则化可以产生稀疏的模型（即很多权重为0，可以实现特征选择，计算资源需求小）。</li>
+<li>dropout：随机对一些参数置 0</li>
+<li>早停：在验证集上性能下降就早停</li>
+<li>噪声注入</li>
+</ol>
+<h3 id="正则化有哪些？为什么要加入正则化"><a href="#正则化有哪些？为什么要加入正则化" class="headerlink" title="正则化有哪些？为什么要加入正则化"></a>正则化有哪些？为什么要加入正则化</h3><p><strong>正则化的目的</strong>是通过限制模型的复杂度，防止过拟合</p>
+<ul>
+<li>L1 正则化： $L=Loss(y,\hat y)+ \lambda \sum_i |w_i|$，在损失函数中增加所有权重绝对值的惩罚项，会将某些权重 $w_i$ 收缩为 0，起到变量选择的作用。适用于<strong>特征稀疏的场景</strong>，容易导致某些特征被完全忽略。</li>
+<li>L2 正则化：$L=Loss(y, \hat y)+ \lambda \sum_i w_i^2 $，不会让权重完全为 0，而是倾向于将权重的值缩小。更适合多特征问题。</li>
+<li>Dropout：在每个训练批次中，以一定概率随机“屏蔽”一部分神经元，使其不参与前向和反向传播。防止神经网络中过度依赖某些特定的神经元</li>
+</ul>
+<h2 id="LayerNorm-amp-BatchNorm"><a href="#LayerNorm-amp-BatchNorm" class="headerlink" title="LayerNorm \&amp; BatchNorm"></a>LayerNorm \&amp; BatchNorm</h2><h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><h3 id="MSE"><a href="#MSE" class="headerlink" title="MSE"></a>MSE</h3><p>MSE: Mean Squared Error<br>均方误差是指参数估计值与参数真值之差平方的期望值;<br>MSE可以评价数据的变化程度，MSE的值越小，说明预测模型描述实验数据具有更好的精确度。</p>
+<script type="math/tex; mode=display">\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2</script><h3 id="RMSE"><a href="#RMSE" class="headerlink" title="RMSE"></a>RMSE</h3><p>RMSE: Root Mean Squared Error<br>均方根误差:均方根误差是均方误差的算术平方根</p>
+<script type="math/tex; mode=display">\text{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}</script><h3 id="MAE"><a href="#MAE" class="headerlink" title="MAE"></a>MAE</h3><p>MAE :Mean Absolute Error<br>平均绝对误差是绝对误差的平均值;<br>平均绝对误差能更好地反映预测值误差的实际情况.</p>
+<script type="math/tex; mode=display">\text{MAE} = \frac{1}{N} \sum_{i=1}^N |(y_i - \hat{y}_i)|</script><h3 id="交叉熵损失"><a href="#交叉熵损失" class="headerlink" title="交叉熵损失"></a>交叉熵损失</h3><p>熵：信息量关于概率分布 $P$ 的期望，$H(x)=-\sum_{i=0}^{N} P(X=x_i)logP(X=x_i)$</p>
+<blockquote>
+<p>那些接近确定性的分布（输出几乎可以确定）具有较低的熵，那些接近均匀分布的概率分布具有较高的熵。故用交叉熵损失可让分类的分布更为确定/准确</p>
+</blockquote>
+<p>单标签分类：$Loss=-\sum_{i=0}^{N}y_i \log \hat y_i$，其中 $y_i$ 为真实分布，$\hat y_i$ 为预测分布(输出的概率).</p>
+<blockquote>
+<p>用一个例子来说明，在手写数字识别任务中，如果样本是数字“5”，那么真实分布应该为：[ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ]，网络输出的分布为：[ 0.1, 0.1, 0, 0, 0, 0.7, 0, 0.1, 0, 0 ]</p>
+</blockquote>
+<p>多标签分类(二元交叉熵损失)：$Loss=\frac{1}{n} \sum -y \log \hat y - (1-y) \log(1-\hat y)$</p>
+<blockquote>
+<p>例如，图中有米饭和一些菜品，假设当前的多标签分类任务有三个标签：米饭(A)、南瓜(B)、青菜(C). 很明显，图中是没有青菜的，它的真实分布应该为: [ 1, 1, 0 ]. 假设网络输出的概率分布为: [ 0.8, 0.9, 0.1 ]</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+Loss_A &= -1 \log 0.8 - (1-1) \log (1-0.8)\\\\
+Loss_B &= -1 \log 0.9 - (1-1) \log (1-0.9)\\\\
+Loss_C &= -0 \log 0.1 - (1-0) \log (1-0.1)\\\\
+Loss_{all} &= Loss_A + Loss_B + Loss_C\\\\
+\end{aligned}</script></blockquote>
+<h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><p>函数：$z=wX+b$</p>
+<p>模型输出经过 sigmoid：$\hat y =\sigma(z)=\frac{1}{1+e^{-z}}$</p>
+<p>用二元交叉熵损失：$L=\frac{1}{n} \sum -y \log \hat y - (1-y) \log(1-\hat y)$</p>
+<p>梯度推导：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\frac{\partial L}{\partial w}=\frac{1}{n} X^T (\hat y - y)\\\\
+\frac{\partial L}{\partial b}=\frac{1}{n} \sum_{i=1}^n (\hat y_i - y_i)
+\end{aligned}</script><p>梯度更新：$w^{(r+1)}=w^r-\alpha \frac{\partial L}{\partial w}$, $b^{(r+1)}=b^r-\alpha \frac{\partial L}{\partial b}$</p>
+
                 
               </div>
             
@@ -293,7 +351,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" class="category-chain-item">开发笔记</a>
+  <a href="/categories/%E7%AE%97%E6%B3%95%E6%9D%82%E8%AE%B0/" class="category-chain-item">算法杂记</a>
   
   
 
@@ -308,9 +366,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%BC%80%E5%8F%91/" class="print-no-link">#开发</a>
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
       
-        <a href="/tags/python/" class="print-no-link">#python</a>
+        <a href="/tags/%E7%AE%97%E6%B3%95/" class="print-no-link">#算法</a>
+      
+        <a href="/tags/%E5%9F%BA%E7%A1%80/" class="print-no-link">#基础</a>
       
     </div>
   
@@ -322,8 +382,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Python</div>
-      <div>https://guokent.github.io/developnotes/python/</div>
+      <div>Deeplearning 基础</div>
+      <div>https://guokent.github.io/deeplearning/basic/</div>
     </div>
     <div class="license-meta">
       
@@ -335,7 +395,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年12月31日</div>
+          <div>2024年10月2日</div>
         </div>
       
       
@@ -367,9 +427,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/developnotes/distribute/" title="Pytorch 分布式训练">
+                      <a href="/deeplearning/attention/" title="Attention 算法">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Pytorch 分布式训练</span>
+                        <span class="hidden-mobile">Attention 算法</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -377,8 +437,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/developnotes/git/" title="Git 笔记">
-                        <span class="hidden-mobile">Git 笔记</span>
+                      <a href="/undefined/" title="开篇首记">
+                        <span class="hidden-mobile">开篇首记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -435,6 +495,12 @@
 
 
   
+
+
+  
+  
+
+
 
 
 
@@ -627,6 +693,49 @@
 
 
   <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
 
   <script  src="/js/local-search.js" ></script>
 

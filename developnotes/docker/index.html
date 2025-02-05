@@ -26,8 +26,8 @@
 <meta property="og:site_name" content="KentGuoK">
 <meta property="og:description" content="创建镜像通常，创建 Docker 镜像的方法是通过 Dockerfile 文件。Dockerfile 是一个文本文件，包含了构建镜像所需的所有指令。 基于 Ubuntu 创建 Python 环境1234567891011121314151617181920# 使用官方 Ubuntu 镜像作为基础镜像FROM ubuntu:20.04# 设置环境变量，防止在安装过程中出现交互式提示ENV DEBIA">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-09-30T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-01-30T03:14:28.502Z">
+<meta property="article:published_time" content="2025-01-20T11:00:00.000Z">
+<meta property="article:modified_time" content="2025-02-05T15:30:21.322Z">
 <meta property="article:author" content="Kent">
 <meta property="article:tag" content="开发">
 <meta property="article:tag" content="docker">
@@ -212,8 +212,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-10-01 00:00" pubdate>
-          2024年10月1日 凌晨
+        <time datetime="2025-01-20 19:00" pubdate>
+          2025年1月20日 晚上
         </time>
       </span>
     
@@ -224,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          573 字
+          568 字
         
       </span>
     
@@ -279,18 +279,16 @@
                 
                 <h3 id="创建镜像"><a href="#创建镜像" class="headerlink" title="创建镜像"></a>创建镜像</h3><p>通常，创建 Docker 镜像的方法是通过 <code>Dockerfile</code> 文件。<code>Dockerfile</code> 是一个文本文件，包含了构建镜像所需的所有指令。</p>
 <h5 id="基于-Ubuntu-创建-Python-环境"><a href="#基于-Ubuntu-创建-Python-环境" class="headerlink" title="基于 Ubuntu 创建 Python 环境"></a>基于 Ubuntu 创建 Python 环境</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用官方 Ubuntu 镜像作为基础镜像</span><br>FROM ubuntu:<span class="hljs-number">20.04</span><br><br><span class="hljs-comment"># 设置环境变量，防止在安装过程中出现交互式提示</span><br>ENV DEBIAN_FRONTEND=noninteractive<br><br><span class="hljs-comment"># 更新镜像并安装 Python 和 pip</span><br>RUN apt-get update &amp;&amp; apt-get install -y python3 python3-pip<br><br><span class="hljs-comment"># 设置工作目录</span><br>WORKDIR /app<br><br><span class="hljs-comment"># 将本地目录的代码复制到容器内</span><br>COPY . /app<br><br><span class="hljs-comment"># 安装 Python 依赖（假设有 requirements.txt 文件）</span><br>RUN pip3 install -r requirements.txt<br><br><span class="hljs-comment"># 默认运行命令</span><br>CMD [<span class="hljs-string">&quot;python3&quot;</span>, <span class="hljs-string">&quot;app.py&quot;</span>]<br></code></pre></td></tr></table></figure>
-
 <h5 id="基于-Python-官方镜像"><a href="#基于-Python-官方镜像" class="headerlink" title="基于 Python 官方镜像"></a>基于 Python 官方镜像</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用官方 Python 3.9 镜像作为基础镜像</span><br>FROM python:<span class="hljs-number">3.9</span>-slim<br><br><span class="hljs-comment"># 设置工作目录</span><br>WORKDIR /app<br><br><span class="hljs-comment"># 复制当前目录内容到容器中的工作目录</span><br>COPY . /app<br><br><span class="hljs-comment"># 安装 Python 依赖</span><br>RUN pip install -r requirements.txt<br><br><span class="hljs-comment"># 运行 Python 应用</span><br>CMD [<span class="hljs-string">&quot;python&quot;</span>, <span class="hljs-string">&quot;app.py&quot;</span>]<br></code></pre></td></tr></table></figure>
-
 <p>在包含 <code>Dockerfile</code> 文件的目录中运行以下命令来构建镜像：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker build -t mylocalenv:latest .<br></code></pre></td></tr></table></figure>
 <ul>
 <li><code>-t mylocalenv:latest</code> 用于为镜像指定一个标签（这里是 <code>mylocalenv</code>）。</li>
 <li><code>.</code> 表示当前目录是构建上下文。</li>
 </ul>
-<h3 id="拉取现有镜像"><a href="#拉取现有镜像" class="headerlink" title="拉取现有镜像"></a>拉取现有镜像</h3><p><code>docker pull [OPTIONS] NAME[:TAG|@DIGEST]</code>  &#x2F;&#x2F; <strong>拉取镜像(下载)</strong></p>
+<h3 id="拉取现有镜像"><a href="#拉取现有镜像" class="headerlink" title="拉取现有镜像"></a>拉取现有镜像</h3><p><code>docker pull [OPTIONS] NAME[:TAG|@DIGEST]</code>  // <strong>拉取镜像(下载)</strong></p>
 <ul>
-<li>NAME: 镜像名称，通常包含注册表地址（如 <a target="_blank" rel="noopener" href="http://docker.io/library/ubuntu%EF%BC%89">docker.io&#x2F;library&#x2F;ubuntu）</a></li>
+<li>NAME: 镜像名称，通常包含注册表地址（如 <a target="_blank" rel="noopener" href="http://docker.io/library/ubuntu%EF%BC%89">docker.io/library/ubuntu）</a></li>
 <li>TAG(可选)：镜像标签</li>
 <li>DIGEST(可选)：镜像SHA256摘要</li>
 </ul>
@@ -304,7 +302,7 @@
 </ul>
 <h3 id="进入容器"><a href="#进入容器" class="headerlink" title="进入容器"></a>进入容器</h3><p><code>docker exec -it mycontainer bash</code><br><code>docker images</code> 列出镜像列表<br><code>docker ps -a</code> 列出所有容器，<code>-a</code> 代表所有<br><code>docker start mycontainer</code> 启动容器<br><code>docker stop mycontainer</code> 停止容器<br><code>docker kil mycontainer</code> 杀死容器<br><code>docker rm mycontainer</code> 删除容器<br><code>docker rmi myimage</code> 删除镜像（需删除关联容器）<br><code>Ctrl + D</code> 退出容器</p>
 <h3 id="保存容器为新镜像"><a href="#保存容器为新镜像" class="headerlink" title="保存容器为新镜像"></a>保存容器为新镜像</h3><p><code>docker commit -a &#39;author&#39; -m &#39;instruction&#39; mycontainer new_image</code> 保存为新镜像<br><code>docker save -o tar_name.tar image_name</code> 将镜像保存为压缩包<br><code>docker load -i tar_name.tar</code> 读取压缩包镜像，然后用 <code>docker images</code> 就能看到一个新镜像</p>
-<h3 id="本地-文件-环境-传入容器"><a href="#本地-文件-环境-传入容器" class="headerlink" title="本地 文件&#x2F;环境 传入容器"></a>本地 文件&#x2F;环境 传入容器</h3><p><code>docker cp /home/b/miniconda3/envs/py39 mycontainer:/opt/conda/envs</code><br>将本地的<code>py39</code>环境复制到容器<code>mycontainer</code>中</p>
+<h3 id="本地-文件-环境-传入容器"><a href="#本地-文件-环境-传入容器" class="headerlink" title="本地 文件/环境 传入容器"></a>本地 文件/环境 传入容器</h3><p><code>docker cp /home/b/miniconda3/envs/py39 mycontainer:/opt/conda/envs</code><br>将本地的<code>py39</code>环境复制到容器<code>mycontainer</code>中</p>
 
                 
               </div>
@@ -365,7 +363,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年10月1日</div>
+          <div>2025年1月20日</div>
         </div>
       
       
@@ -397,18 +395,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/developnotes/distribute/" title="Pytorch 分布式训练">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Pytorch 分布式训练</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/developnotes/git/" title="Git 笔记">
-                        <span class="hidden-mobile">Git 笔记</span>
+                      <a href="/developnotes/distribute/" title="Pytorch 分布式训练">
+                        <span class="hidden-mobile">Pytorch 分布式训练</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
