@@ -556,7 +556,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/deeplearning/attention/" target="_self">
         <div>
-          Self-Attention {% _internal_math_placeholder 24 %}  理论解释为什么 Attention 有效 待更新  为什么要 scaling？scaling 目的是解决数值稳定性问题，从而提高训练的效率和性能。当 Q，K 的维度 dkd_kdk​ 很大时， qi,kiq_i,k_iqi​,ki​ 的点积值可能变得很大。点积值越大，输入到 softmax 函数
+          Self-AttentionQ=X⋅WQ,K=X⋅WK,V=X⋅WVAttention(Q,K,V)=softmax(QKTdk)VX.shape:[B,T,D],W.shape:[D,D],dk=D \begin{aligned} &amp; Q = X \cdot W_Q, \quad K = X \cdot W_K, \quad V = X \cdot W_V \\ &amp; \text{
         </div>
       </a>
 
@@ -621,7 +621,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/deeplearning/basic/" target="_self">
         <div>
-          常用激活函数1. sigmoid: {% _internal_math_placeholder 0 %}  优点： 平滑且连续，适合二分类任务，具有明确的生物意义缺点： 输入绝对值过大时有梯度消失问题，输出大多集中在 0 和 1，可能导致网络的权重更新不平衡。指数运算效率较慢 2. TanhTanh(x)=ex−e−xex+e−x Tanh(x) = \frac{e^x-e^{-x}}{e^x+e
+          常用激活函数1. sigmoid:σ(x)=11+e−x \sigma (x) = \frac{1}{1+e^{-x}} σ(x)=1+e−x1​ 优点： 平滑且连续，适合二分类任务，具有明确的生物意义缺点： 输入绝对值过大时有梯度消失问题，输出大多集中在 0 和 1，可能导致网络的权重更新不平衡。指数运算效率较慢 2. TanhTanh(x)=ex−e−xex+e−x Tanh(x) = \fr
         </div>
       </a>
 
