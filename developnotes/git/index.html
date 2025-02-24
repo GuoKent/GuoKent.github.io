@@ -19,15 +19,15 @@
   <meta name="author" content="Kent">
   <meta name="keywords" content="">
   
-    <meta name="description" content="git clone12345678git clone：git clone http:&#x2F;&#x2F;xxxx.git  &#x2F;&#x2F; 默认master分支git clone -b &lt;branch_name&gt; http:&#x2F;&#x2F;xxxx.git  &#x2F;&#x2F; clone指定分支# clone 特定版本&#x2F;分支git clone -branch &lt;branch-name&gt; &lt;repo-address&amp;g">
+    <meta name="description" content="git clone12345678git clone：git clone http:&#x2F;&#x2F;xxxx.git  # 默认master分支git clone -b &lt;branch_name&gt; http:&#x2F;&#x2F;xxxx.git  # clone指定分支# clone 特定版本&#x2F;分支git clone -branch &lt;branch-name&gt; &lt;repo-address&gt;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git 笔记">
 <meta property="og:url" content="https://guokent.github.io/developnotes/git/index.html">
 <meta property="og:site_name" content="KentGuoK">
-<meta property="og:description" content="git clone12345678git clone：git clone http:&#x2F;&#x2F;xxxx.git  &#x2F;&#x2F; 默认master分支git clone -b &lt;branch_name&gt; http:&#x2F;&#x2F;xxxx.git  &#x2F;&#x2F; clone指定分支# clone 特定版本&#x2F;分支git clone -branch &lt;branch-name&gt; &lt;repo-address&amp;g">
+<meta property="og:description" content="git clone12345678git clone：git clone http:&#x2F;&#x2F;xxxx.git  # 默认master分支git clone -b &lt;branch_name&gt; http:&#x2F;&#x2F;xxxx.git  # clone指定分支# clone 特定版本&#x2F;分支git clone -branch &lt;branch-name&gt; &lt;repo-address&gt;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-12-23T13:00:00.000Z">
-<meta property="article:modified_time" content="2025-02-05T15:30:30.211Z">
+<meta property="article:modified_time" content="2025-02-11T16:39:57.017Z">
 <meta property="article:author" content="Kent">
 <meta property="article:tag" content="开发">
 <meta property="article:tag" content="git">
@@ -277,11 +277,11 @@
             
               <div class="markdown-body">
                 
-                <h3 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">git clone：<br>git clone http://xxxx.git  // 默认master分支<br>git clone -b &lt;branch_name&gt; http://xxxx.git  // clone指定分支<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">clone</span> 特定版本/分支</span><br>git clone -branch &lt;branch-name&gt; &lt;repo-address&gt;  // 克隆特定分支<br>git tag  // 列出全部tag(先clone全部仓库)<br>git checkout &lt;tag&gt;  // 切换到指定tag(版本)<br></code></pre></td></tr></table></figure>
-<h3 id="连接仓库-remote"><a href="#连接仓库-remote" class="headerlink" title="连接仓库 remote"></a>连接仓库 remote</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">git remote -v  // 查看当前连接<br>git remote remove origin  // 删除现有连接<br>git remote add origin 你的远程库地址  // 把本地库与远程库关联<br></code></pre></td></tr></table></figure>
-<h3 id="git-提交"><a href="#git-提交" class="headerlink" title="git 提交"></a>git 提交</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">第一次提交</span><br>git init   // 初始化版本库<br>git add .   // 添加文件到版本库（只是添加到缓存区），.代表添加文件夹下所有文件<br>git add -f &lt;路径&gt;  // 添加被忽略文件<br>git commit -m &quot;first commit&quot; // 把添加的文件提交到版本库，并填写提交备注<br>git push -u origin master    // 第一次推送时<br>git push  // 第一次推送后，直接使用该命令即可推送修改<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">后续提交</span><br>git add .<br>git commit -m &quot;message&quot;<br>git push origin master<br>git push origin &lt;new-brance&gt;  // master无法访问时用新分支 new-branch<br></code></pre></td></tr></table></figure>
-<h3 id="远程更新代码"><a href="#远程更新代码" class="headerlink" title="远程更新代码"></a>远程更新代码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">git pull origin<br>git pull origin &lt;branch&gt;  // 初次, 指定分支<br></code></pre></td></tr></table></figure>
-<h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">git branch --list  // 查看分支<br>git branch -m new-name  // 分支重命名<br>git checkout &lt;branch-name&gt;  // 切换到分支<br>git checkout -b &lt;branch-name&gt; // 新建分支<br>git merge target_branch  // 将目标分支合并到当前分支<br></code></pre></td></tr></table></figure>
+                <h3 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span>：<br>git <span class="hljs-built_in">clone</span> http://xxxx.git  <span class="hljs-comment"># 默认master分支</span><br>git <span class="hljs-built_in">clone</span> -b &lt;branch_name&gt; http://xxxx.git  <span class="hljs-comment"># clone指定分支</span><br><br><span class="hljs-comment"># clone 特定版本/分支</span><br>git <span class="hljs-built_in">clone</span> -branch &lt;branch-name&gt; &lt;repo-address&gt;  <span class="hljs-comment"># 克隆特定分支</span><br>git tag  <span class="hljs-comment"># 列出全部tag(先clone全部仓库)</span><br>git checkout &lt;tag&gt;  <span class="hljs-comment"># 切换到指定tag(版本)</span><br></code></pre></td></tr></table></figure>
+<h3 id="连接仓库-remote"><a href="#连接仓库-remote" class="headerlink" title="连接仓库 remote"></a>连接仓库 remote</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">git remote -v  <span class="hljs-comment"># 查看当前连接</span><br>git remote remove origin  <span class="hljs-comment"># 删除现有连接</span><br>git remote add origin 你的远程库地址  <span class="hljs-comment"># 把本地库与远程库关联</span><br></code></pre></td></tr></table></figure>
+<h3 id="git-提交"><a href="#git-提交" class="headerlink" title="git 提交"></a>git 提交</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 第一次提交</span><br>git init   <span class="hljs-comment"># 初始化版本库</span><br>git add .   <span class="hljs-comment"># 添加文件到版本库（只是添加到缓存区），.代表添加文件夹下所有文件</span><br>git add -f &lt;路径&gt;  <span class="hljs-comment"># 添加被忽略文件</span><br>git commit -m <span class="hljs-string">&quot;first commit&quot;</span> <span class="hljs-comment"># 把添加的文件提交到版本库，并填写提交备注</span><br>git push -u origin master    <span class="hljs-comment"># 第一次推送时</span><br>git push  <span class="hljs-comment"># 第一次推送后，直接使用该命令即可推送修改</span><br><br><span class="hljs-comment"># 后续提交</span><br>git add .<br>git commit -m <span class="hljs-string">&quot;message&quot;</span><br>git push origin master<br>git push origin &lt;new-brance&gt;  <span class="hljs-comment"># master无法访问时用新分支 new-branch</span><br></code></pre></td></tr></table></figure>
+<h3 id="远程更新代码"><a href="#远程更新代码" class="headerlink" title="远程更新代码"></a>远程更新代码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">git pull origin<br>git pull origin &lt;branch&gt;  <span class="hljs-comment"># 初次, 指定分支</span><br></code></pre></td></tr></table></figure>
+<h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">git branch --list  <span class="hljs-comment"># 查看分支</span><br>git branch -m new-name  <span class="hljs-comment"># 分支重命名</span><br>git checkout &lt;branch-name&gt;  <span class="hljs-comment"># 切换到分支</span><br>git checkout -b &lt;branch-name&gt; <span class="hljs-comment"># 新建分支</span><br>git merge target_branch  <span class="hljs-comment"># 将目标分支合并到当前分支</span><br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -383,8 +383,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/papernotes/blip/" title="BLIP">
-                        <span class="hidden-mobile">BLIP</span>
+                      <a href="/papernotes/clip/" title="CLIP">
+                        <span class="hidden-mobile">CLIP</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -485,10 +485,6 @@
 
   <footer>
     <div class="footer-inner">
-  
-    <div class="footer-content">
-       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
-    </div>
   
   
   

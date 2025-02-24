@@ -1,0 +1,754 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.jpg">
+  <link rel="icon" href="/img/logo.jpg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Kent">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="微调微调一个模型的流程收集数据 →\rightarrow→ 数据处理&#x2F;清洗 →\rightarrow→ 选择合适模型&#x2F;loss →\rightarrow→ 添加特定任务头层 →\rightarrow→ 冻结部分参数 →\rightarrow→ 设定超参数 →\rightarrow→ 模型训练 →\rightarrow→ 模型评估 LoRA 微调 核心思想: 参数优化量可以是低秩的，映射到低维空间下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微调">
+<meta property="og:url" content="https://guokent.github.io/deeplearning/finetuning/index.html">
+<meta property="og:site_name" content="KentGuoK">
+<meta property="og:description" content="微调微调一个模型的流程收集数据 →\rightarrow→ 数据处理&#x2F;清洗 →\rightarrow→ 选择合适模型&#x2F;loss →\rightarrow→ 添加特定任务头层 →\rightarrow→ 冻结部分参数 →\rightarrow→ 设定超参数 →\rightarrow→ 模型训练 →\rightarrow→ 模型评估 LoRA 微调 核心思想: 参数优化量可以是低秩的，映射到低维空间下">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://guokent.github.io/deeplearning/finetuning/lora.png">
+<meta property="og:image" content="https://guokent.github.io/deeplearning/finetuning/prefix1.jpg">
+<meta property="og:image" content="https://guokent.github.io/deeplearning/finetuning/prefix2.jpg">
+<meta property="article:published_time" content="2024-12-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-02-24T14:08:48.643Z">
+<meta property="article:author" content="Kent">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="大模型">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://guokent.github.io/deeplearning/finetuning/lora.png">
+  
+  
+  
+  <title>微调 - KentGuoK</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"guokent.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha256-TThEtR+XalhWKkfF383YLOrI50NGNeIqrzS+q08afrY=" crossorigin="anonymous"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>HomePage</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="微调"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-12 00:00" pubdate>
+          2024年12月12日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">微调</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="微调"><a href="#微调" class="headerlink" title="微调"></a>微调</h2><h3 id="微调一个模型的流程"><a href="#微调一个模型的流程" class="headerlink" title="微调一个模型的流程"></a>微调一个模型的流程</h3><p>收集数据 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 数据处理/清洗 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 选择合适模型/loss <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 添加特定任务头层 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 冻结部分参数 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 设定超参数 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 模型训练 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 模型评估</p>
+<h2 id="LoRA-微调"><a href="#LoRA-微调" class="headerlink" title="LoRA 微调"></a>LoRA 微调</h2><p><img src="/deeplearning/finetuning/lora.png" srcset="/img/loading.gif" lazyload title="LoRA fine tuning" width="300"></p>
+<p><strong>核心思想:</strong> 参数优化量可以是低秩的，映射到低维空间下也能保持性能<br><strong>实现手段:</strong> 冻结 W，增加一个旁路，采用残差的方式更新参数</p>
+<h3 id="LoRA-的参数及作用"><a href="#LoRA-的参数及作用" class="headerlink" title="LoRA 的参数及作用"></a>LoRA 的参数及作用</h3><h4 id="低秩矩阵秩（Rank-r）"><a href="#低秩矩阵秩（Rank-r）" class="headerlink" title="低秩矩阵秩（Rank r）"></a>低秩矩阵秩（Rank r）</h4><ul>
+<li><strong>作用</strong>：r 是低秩矩阵的秩，控制了模型微调时调整的参数量。秩越高，模型的表示能力越强，但微调的参数量也越大；秩越低，微调的参数量越少，但表达能力可能会受到限制。</li>
+<li><strong>设置</strong>：在实践中，秩通常是一个小的超参数，可能设置为 8、16 或 32 等，具体取决于微调任务的要求和硬件的限制。</li>
+</ul>
+<h4 id="缩放因子（Scaling-Factor）"><a href="#缩放因子（Scaling-Factor）" class="headerlink" title="缩放因子（Scaling Factor）"></a>缩放因子（Scaling Factor）</h4><ul>
+<li><strong>作用</strong>：在 LoRA 中，A 和 B 矩阵的输出需要乘上一个缩放因子（通常为一个超参数），以控制 LoRA 添加的偏移量大小。这个因子有助于控制 LoRA 的影响力，避免它对原始模型参数的改变过大。</li>
+<li><strong>设置</strong>：一般会通过交叉验证或实验来选择合适的缩放因子，常见的设置值是 1 或其他小的正数。</li>
+</ul>
+<h4 id="注意力层的-LoRA-适配（LoRA-in-Attention-Layers）"><a href="#注意力层的-LoRA-适配（LoRA-in-Attention-Layers）" class="headerlink" title="注意力层的 LoRA 适配（LoRA in Attention Layers）"></a>注意力层的 LoRA 适配（LoRA in Attention Layers）</h4><p>LoRA 在应用到 Transformer 类模型（如 GPT 或 BERT）时，常常针对注意力层（Attention layers）进行微调。Transformer 的注意力机制涉及矩阵乘法操作，LoRA 可以通过添加低秩矩阵来调整这些矩阵。</p>
+<ul>
+<li><strong>作用</strong>：在注意力机制中，LoRA 通过对查询（Query）、键（Key）和值（Value）的权重矩阵进行低秩调整，来使模型在处理任务时能够更好地适应特定的任务或领域。</li>
+<li><strong>设置</strong>：LoRA 主要适用于 Transformer 的注意力层，尤其是 Q 和 K 的权重矩阵。</li>
+</ul>
+<h4 id="矩阵初始化方式"><a href="#矩阵初始化方式" class="headerlink" title="矩阵初始化方式"></a>矩阵初始化方式</h4><ul>
+<li><strong>作用</strong>：确定低秩矩阵的初始化方式。具体来说，<code>fan_in_fan_out</code> 控制低秩矩阵 A 和 B 的初始化方式，通常采用 Xavier 初始化（或 Glorot 初始化）。该参数是通过控制权重矩阵的“输入输出”进行初始化，优化网络的学习效率。</li>
+<li><strong>设置</strong>：通常根据模型的需要设置为 <code>True</code> 或 <code>False</code>，以决定如何初始化低秩矩阵。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">lora_config = LoRAConfig(<br>    r=<span class="hljs-number">8</span>,                         <span class="hljs-comment"># 低秩矩阵的秩</span><br>    lora_alpha=<span class="hljs-number">32</span>,               <span class="hljs-comment"># 缩放因子</span><br>    lora_dropout=<span class="hljs-number">0.1</span>,            <span class="hljs-comment"># LoRA 层的 dropout 比例</span><br>    enabled=<span class="hljs-literal">True</span>,                <span class="hljs-comment"># 启用 LoRA 微调</span><br>    target_modules=[<span class="hljs-string">&quot;q_proj&quot;</span>, <span class="hljs-string">&quot;k_proj&quot;</span>, <span class="hljs-string">&quot;v_proj&quot;</span>],  <span class="hljs-comment"># 选择要应用 LoRA 的层</span><br>    fan_in_fan_out=<span class="hljs-literal">True</span>          <span class="hljs-comment"># 是否采用 fan-in-fan-out 初始化</span><br>)<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>r 过小：可以减少显存和计算开销，提高效率。降维空间太小，可能不足以捕捉下游任务的特定特征，导致模型表达能力不足，微调效果较差。<br>r 过大：能够捕捉更复杂的特征，理论上模型的性能可能提升。如果任务本身较简单，使用过高的 <code>r</code> 会导致过拟合。<br>λ 过小：微调权重 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>W</mi></mrow><annotation encoding="application/x-tex">\Delta W</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">Δ</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span></span></span></span>​ 的影响被弱化，模型主干部分权重保持稳定，有助于避免训练初期的不稳定。但会导致LoRA 学到的特征贡献过低，模型难以适应下游任务。<br>λ 过大：显著增加 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>W</mi></mrow><annotation encoding="application/x-tex">\Delta W</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">Δ</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span></span></span></span> 对模型的影响力，可能快速适配复杂任务。破坏预训练模型的已有能力，导致模型生成质量下降或任务性能不稳定。更容易发生梯度爆炸。</p>
+</blockquote>
+<h2 id="Prefix-Tuning"><a href="#Prefix-Tuning" class="headerlink" title="Prefix Tuning"></a>Prefix Tuning</h2><p>每层插入可学习前缀向量，随机初始化，然后用MLP来得到prefix embedding</p>
+<ul>
+<li>针对自回归架构模型：在句子前面添加前缀，得到 <code>z = [PREFIX; x; y]</code>，合适的上文能够在固定 LM 的情况下去引导生成下文（比如：GPT3的上下文学习）。</li>
+<li>针对编码器-解码器架构模型：Encoder和Decoder都增加了前缀，得到 <code>z = [PREFIX; x; PREFIX0; y]</code>。<strong>Encoder端增加前缀是为了引导输入部分的编码，Decoder 端增加前缀是为了引导后续token的生成。</strong></li>
+</ul>
+<p><img src="/deeplearning/finetuning/prefix1.jpg" srcset="/img/loading.gif" lazyload title="Prefix tuning"></p>
+<p><img src="/deeplearning/finetuning/prefix2.jpg" srcset="/img/loading.gif" lazyload title="Prefix tuning"></p>
+<p><strong>更高表达能力</strong>：前缀向量直接干预每一层注意力机制，比 Prompt-tuning 更有效。<br><strong>轻量化</strong>：仍然保持模型参数冻结，仅优化前缀向量。<br><strong>灵活性强</strong>：适用于更复杂的下游任务。</p>
+<h2 id="Prompt-Tuning"><a href="#Prompt-Tuning" class="headerlink" title="Prompt Tuning"></a>Prompt Tuning</h2><p>Prompt 的形式通常分为两类：</p>
+<ul>
+<li><strong>Hard Prompt（硬提示）</strong>：通过自然语言手工设计的文本提示。<ul>
+<li>优点：直观、简单。</li>
+<li>缺点：人工设计的 Prompt 效果不一定最优，可能需要反复调整。</li>
+</ul>
+</li>
+<li><strong>Soft Prompt（软提示）</strong>：通过优化可学习的嵌入向量，作为 Prompt 的一部分。<ul>
+<li>优点：无需人工干预，优化过程自动寻找最佳提示。</li>
+<li>缺点：需要训练一些额外参数，难以直接解释。</li>
+</ul>
+</li>
+</ul>
+<p>输入前添加可学习的离散或连续的 Prompt（提示），让 LLM 通过这些提示完成任务。这些 Prompt 参数是固定长度的嵌入向量，作为输入直接优化。目标是找到一个最优的 Prompt，让模型能更好地适应特定任务，而无需改变模型的参数<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo stretchy="false">[</mo><mi>P</mi><mi>r</mi><mi>o</mi><mi>m</mi><mi>p</mi><mi>t</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo stretchy="false">]</mo><mo>+</mo><mtext>Task Input</mtext><mo>→</mo><msub><mtext>LLM</mtext><mrow><mi>O</mi><mi>u</mi><mi>t</mi><mi>p</mi><mi>u</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+[Prompt(\theta)] + \text{Task Input} \rightarrow \text{LLM}_{Output}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal">ro</span><span class="mord mathnormal">m</span><span class="mord mathnormal">pt</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="mclose">)]</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Task Input</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord text"><span class="mord">LLM</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">O</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">tp</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></span><br><strong>简单易用</strong>：无需修改预训练模型，只需优化 Prompt 的参数。<br><strong>轻量化</strong>：微调的参数量少，非常适合处理大规模模型。<br><strong>适用性强</strong>：在少样本（few-shot）学习中表现较好。</p>
+<h2 id="P-Tuning-Prompt-Tuning-v2"><a href="#P-Tuning-Prompt-Tuning-v2" class="headerlink" title="P-Tuning(Prompt Tuning-v2)"></a>P-Tuning(Prompt Tuning-v2)</h2><p>P-tuning（Prompt tuning v2 的进化版本）提出在 Prompt 中使用更复杂的架构（如 LSTM 或深层 Transformer），用以生成动态的 Prompt 嵌入。</p>
+<p>动态的 Prompt 嵌入<strong>可以根据具体输入内容生成任务相关的提示</strong>，比固定向量更有表达力。<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo stretchy="false">[</mo><mi>D</mi><mi>y</mi><mi>n</mi><mi>a</mi><mi>m</mi><mi>i</mi><mi>c</mi><mtext> </mtext><mi>P</mi><mi>r</mi><mi>o</mi><mi>m</mi><mi>p</mi><mi>t</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo stretchy="false">]</mo><mo>+</mo><mtext>Task Input</mtext><mo>→</mo><msub><mtext>LLM</mtext><mrow><mi>O</mi><mi>u</mi><mi>t</mi><mi>p</mi><mi>u</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+[Dynamic Prompt(θ)] + \text{Task Input} → \text{LLM}_{Output}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.03588em;">Dy</span><span class="mord mathnormal">nami</span><span class="mord mathnormal">c</span><span class="mord"> </span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal">ro</span><span class="mord mathnormal">m</span><span class="mord mathnormal">pt</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="mclose">)]</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Task Input</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord text"><span class="mord">LLM</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">O</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">tp</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+<p><strong>动态提示</strong>：生成输入相关的 Prompt，适用于任务多样性较高的场景。<br><strong>更强泛化能力</strong>：适合更复杂的任务和跨任务的场景。<br><strong>效果更好</strong>：在大规模模型上，性能优于 Prompt-tuning 和 Prefix-tuning。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>方法</strong></th>
+<th><strong>核心思想</strong></th>
+<th><strong>优化参数量</strong></th>
+<th><strong>适用场景</strong></th>
+<th><strong>优点</strong></th>
+<th><strong>缺点</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Prompt-tuning</strong></td>
+<td>可学习的固定长度输入提示</td>
+<td>极小（输入层）</td>
+<td>简单任务、少样本场景</td>
+<td>简单易用、轻量化</td>
+<td>表达能力受限，复杂任务效果差</td>
+</tr>
+<tr>
+<td><strong>Prefix-tuning</strong></td>
+<td>每层插入可学习的前缀向量</td>
+<td>较少（每层）</td>
+<td>复杂任务、对准确率要求高的场景</td>
+<td>灵活性强，适合多任务</td>
+<td>参数量比 Prompt-tuning 多</td>
+</tr>
+<tr>
+<td><strong>P</strong>-<strong>tuning</strong></td>
+<td>动态生成 Prompt 嵌入，结合上下文优化提示</td>
+<td>中等（额外网络参数）</td>
+<td>跨任务、多样性任务</td>
+<td>表达能力强，泛化能力更好</td>
+<td>增加计算复杂度和训练难度</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="SFT-模型的-loss-是怎么计算的？怎么确保只计算该部分的-loss"><a href="#SFT-模型的-loss-是怎么计算的？怎么确保只计算该部分的-loss" class="headerlink" title="SFT 模型的 loss 是怎么计算的？怎么确保只计算该部分的 loss"></a>SFT 模型的 loss 是怎么计算的？怎么确保只计算该部分的 loss</h2><p>在 SFT 中，通常采用的是交叉熵损失</p>
+<p>确保损失只涉及模型的某些特定部分，避免更新整个模型的权重，为此，通常采取以下策略：</p>
+<ol>
+<li>冻结部分模型参数</li>
+<li>通过损失函数选择性计算：只计算计算lora_output于target的loss，然后只反向传播这个loss</li>
+<li>动态学习率调整：不同模块学习率不同</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">optimizer = torch.optim.AdamW([<br>    &#123;<span class="hljs-string">&#x27;params&#x27;</span>: model.base.parameters(), <span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">1e-5</span>&#125;,  <span class="hljs-comment"># 冻结部分的学习率较小</span><br>    &#123;<span class="hljs-string">&#x27;params&#x27;</span>: model.lora.parameters(), <span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">1e-4</span>&#125;,  <span class="hljs-comment"># LoRA 层的学习率较大</span><br>])<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95%E6%9D%82%E8%AE%B0/" class="category-chain-item">算法杂记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/NLP/" class="print-no-link">#NLP</a>
+      
+        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+      
+        <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="print-no-link">#大模型</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>微调</div>
+      <div>https://guokent.github.io/deeplearning/finetuning/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Kent</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/papernotes/blip/" title="BLIP">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">BLIP</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/deeplearning/tokenizer/" title="Tokenizer">
+                        <span class="hidden-mobile">Tokenizer</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
