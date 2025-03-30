@@ -19,23 +19,29 @@
   <meta name="author" content="Kent">
   <meta name="keywords" content="">
   
-    <meta name="description" content="git clone12345678git clone：git clone http:&#x2F;&#x2F;xxxx.git  # 默认master分支git clone -b &lt;branch_name&gt; http:&#x2F;&#x2F;xxxx.git  # clone指定分支# clone 特定版本&#x2F;分支git clone -branch &lt;branch-name&gt; &lt;repo-address&gt;">
+    <meta name="description" content="什么是 vLLM？一言以蔽之: vLLM是一个开源框架，通过PagedAttention算法有效管理大语言模型的注意力内存，提升了吞吐量和内存使用效率。其特点包括24倍的吞吐提升和3.5倍的TGI性能，无需修改模型结构。文章详细介绍了vLLM的离线推理流程，包括KV Cache优化、内存管理和内存共享机制。 vLLM 的特点和优势：  采用了 Paged Attention，可以有效管理 Atte">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Git 笔记">
-<meta property="og:url" content="https://guokent.github.io/developnotes/git/index.html">
+<meta property="og:title" content="vLLM 加速推理框架">
+<meta property="og:url" content="https://guokent.github.io/deeplearning/vllm/index.html">
 <meta property="og:site_name" content="KentGuoK">
-<meta property="og:description" content="git clone12345678git clone：git clone http:&#x2F;&#x2F;xxxx.git  # 默认master分支git clone -b &lt;branch_name&gt; http:&#x2F;&#x2F;xxxx.git  # clone指定分支# clone 特定版本&#x2F;分支git clone -branch &lt;branch-name&gt; &lt;repo-address&gt;">
+<meta property="og:description" content="什么是 vLLM？一言以蔽之: vLLM是一个开源框架，通过PagedAttention算法有效管理大语言模型的注意力内存，提升了吞吐量和内存使用效率。其特点包括24倍的吞吐提升和3.5倍的TGI性能，无需修改模型结构。文章详细介绍了vLLM的离线推理流程，包括KV Cache优化、内存管理和内存共享机制。 vLLM 的特点和优势：  采用了 Paged Attention，可以有效管理 Atte">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-12-23T13:00:00.000Z">
-<meta property="article:modified_time" content="2025-02-11T16:39:57.017Z">
+<meta property="og:image" content="https://pic4.zhimg.com/v2-6035b0440dd9f0eb37bc9c221b977799_b.webp">
+<meta property="og:image" content="https://guokent.github.io/deeplearning/vllm/batch.png">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-b22751a85181c355d4acaa222d781afe_b.webp">
+<meta property="og:image" content="https://pica.zhimg.com/v2-cab043f5f4d3ed2f4e369a542617fb22_b.webp">
+<meta property="og:image" content="https://guokent.github.io/deeplearning/vllm/parallel_sample.png">
+<meta property="article:published_time" content="2025-03-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-18T12:45:03.630Z">
 <meta property="article:author" content="Kent">
-<meta property="article:tag" content="开发">
-<meta property="article:tag" content="git">
+<meta property="article:tag" content="大模型">
+<meta property="article:tag" content="加速推理">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic4.zhimg.com/v2-6035b0440dd9f0eb37bc9c221b977799_b.webp">
   
   
   
-  <title>Git 笔记 - KentGuoK</title>
+  <title>vLLM 加速推理框架 - KentGuoK</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -201,7 +207,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Git 笔记"></span>
+            <span id="subtitle" data-typed-text="vLLM 加速推理框架"></span>
           
         </div>
 
@@ -212,8 +218,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-12-23 21:00" pubdate>
-          2024年12月23日 晚上
+        <time datetime="2025-03-08 00:00" pubdate>
+          2025年3月8日 凌晨
         </time>
       </span>
     
@@ -224,7 +230,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          306 字
+          934 字
         
       </span>
     
@@ -235,7 +241,7 @@
         
         
         
-          3 分钟
+          8 分钟
         
       </span>
     
@@ -272,16 +278,57 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Git 笔记</h1>
+            <h1 id="seo-header">vLLM 加速推理框架</h1>
             
             
               <div class="markdown-body">
                 
-                <h3 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span>：<br>git <span class="hljs-built_in">clone</span> http://xxxx.git  <span class="hljs-comment"># 默认master分支</span><br>git <span class="hljs-built_in">clone</span> -b &lt;branch_name&gt; http://xxxx.git  <span class="hljs-comment"># clone指定分支</span><br><br><span class="hljs-comment"># clone 特定版本/分支</span><br>git <span class="hljs-built_in">clone</span> -branch &lt;branch-name&gt; &lt;repo-address&gt;  <span class="hljs-comment"># 克隆特定分支</span><br>git tag  <span class="hljs-comment"># 列出全部tag(先clone全部仓库)</span><br>git checkout &lt;tag&gt;  <span class="hljs-comment"># 切换到指定tag(版本)</span><br></code></pre></td></tr></table></figure>
-<h3 id="连接仓库-remote"><a href="#连接仓库-remote" class="headerlink" title="连接仓库 remote"></a>连接仓库 remote</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">git remote -v  <span class="hljs-comment"># 查看当前连接</span><br>git remote remove origin  <span class="hljs-comment"># 删除现有连接</span><br>git remote add origin 你的远程库地址  <span class="hljs-comment"># 把本地库与远程库关联</span><br></code></pre></td></tr></table></figure>
-<h3 id="git-提交"><a href="#git-提交" class="headerlink" title="git 提交"></a>git 提交</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 第一次提交</span><br>git init   <span class="hljs-comment"># 初始化版本库</span><br>git add .   <span class="hljs-comment"># 添加文件到版本库（只是添加到缓存区），.代表添加文件夹下所有文件</span><br>git add -f &lt;路径&gt;  <span class="hljs-comment"># 添加被忽略文件</span><br>git commit -m <span class="hljs-string">&quot;first commit&quot;</span> <span class="hljs-comment"># 把添加的文件提交到版本库，并填写提交备注</span><br>git push -u origin master    <span class="hljs-comment"># 第一次推送时</span><br>git push  <span class="hljs-comment"># 第一次推送后，直接使用该命令即可推送修改</span><br><br><span class="hljs-comment"># 后续提交</span><br>git add .<br>git commit -m <span class="hljs-string">&quot;message&quot;</span><br>git push origin master<br>git push origin &lt;new-brance&gt;  <span class="hljs-comment"># master无法访问时用新分支 new-branch</span><br></code></pre></td></tr></table></figure>
-<h3 id="远程更新代码"><a href="#远程更新代码" class="headerlink" title="远程更新代码"></a>远程更新代码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">git pull origin<br>git pull origin &lt;branch&gt;  <span class="hljs-comment"># 初次, 指定分支</span><br></code></pre></td></tr></table></figure>
-<h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">git branch --list  <span class="hljs-comment"># 查看分支</span><br>git branch -m new-name  <span class="hljs-comment"># 分支重命名</span><br>git checkout &lt;branch-name&gt;  <span class="hljs-comment"># 切换到分支</span><br>git checkout -b &lt;branch-name&gt; <span class="hljs-comment"># 新建分支</span><br>git merge target_branch  <span class="hljs-comment"># 将目标分支合并到当前分支</span><br></code></pre></td></tr></table></figure>
+                <h1 id="什么是-vLLM？"><a href="#什么是-vLLM？" class="headerlink" title="什么是 vLLM？"></a>什么是 vLLM？</h1><p>一言以蔽之: vLLM是一个开源框架，通过PagedAttention算法有效管理大语言模型的注意力内存，提升了吞吐量和内存使用效率。其特点包括24倍的吞吐提升和3.5倍的TGI性能，无需修改模型结构。文章详细介绍了vLLM的离线推理流程，包括KV Cache优化、内存管理和内存共享机制。</p>
+<p>vLLM 的特点和优势：</p>
+<ul>
+<li><p>采用了 Paged Attention，可以有效管理 Attention 的 keys、values</p>
+</li>
+<li><p>吞吐量最多可以达到 huggingface 实现的24倍，文本生成推理（TGI）高出3.5倍，并且不需要对模型结构进行任何的改变</p>
+</li>
+</ul>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><ul>
+<li><p>LLM 的推理，最大的瓶颈在于显存。</p>
+</li>
+<li><p>自回归模型的 keys 和 values 通常被称为 KV cache，这些 tensors 会存在 GPU 的显存中，用于生成下一个 token。</p>
+</li>
+<li><p>这些 KV cache 都很大，并且大小是动态变化的，难以预测。已有的系统中，由于显存碎片和过度预留，浪费了60%-80%的显存。</p>
+</li>
+</ul>
+<h1 id="核心机制-Paged-Attention"><a href="#核心机制-Paged-Attention" class="headerlink" title="核心机制: Paged Attention"></a>核心机制: Paged Attention</h1><ul>
+<li><p>Paged Attention 允许在不连续的内存空间中存储连续的 keys 和 values。 具体来说，Paged Attention 会将每个序列的 KV cache 划分为块，每个块包含固定数量 tokens 的 keys 和 values。 在注意力计算过程中，PagedAttention 内核有效地识别并获取这些块。</p>
+</li>
+<li><p>分块之后，这些 KV cache 不再需要连续的内存，从而可以像在操作系统的虚拟内存中一样，更灵活地对这些 KV cache 进行管理。</p>
+</li>
+<li><p>Paged Attention 对于显存的利用接近理论上的最优值（浪费比例低于4%）。通过对显存进行更好的管理，可以使得单次可以使用更大的 batch size，从而进一步利用 GPU 的并行计算能力。</p>
+</li>
+</ul>
+<blockquote>
+<p>具体来说，Paged Attention 把每个序列的 KV Cache 进行了分块，每个块包含固定长度的 token，而在计算 Attention 时可以高效地找到并获取那些块</p>
+</blockquote>
+<h2 id="推理流程"><a href="#推理流程" class="headerlink" title="推理流程"></a>推理流程</h2><p><img src="https://pic4.zhimg.com/v2-6035b0440dd9f0eb37bc9c221b977799_b.webp" srcset="/img/loading.gif" lazyload title="单个请求"></p>
+<p><img src="/deeplearning/vllm/batch.png" srcset="/img/loading.gif" lazyload title="多个请求"></p>
+<p>所以序列在分块之后，只有最后一个块可能会浪费内存(实际中浪费的内存低于4%)。高效利用内存的好处很明显：系统可以在一个 batch 中同时输入更多的序列，提升GPU的利用率，显著地提升吞吐量 .</p>
+<p>Paged Attention 的另外一个好处是高效内存共享。例如，在并行采样的时候，一个 prompt 需要生成多个输出序列。 这种情况下，对于这个 prompt 的计算和内存可以在输出序列之间共享。</p>
+<p><img src="https://pic1.zhimg.com/v2-b22751a85181c355d4acaa222d781afe_b.webp" srcset="/img/loading.gif" lazyload title="共享内存"></p>
+<p>通过块表可以自然地实现内存共享。类似进程间共享物理页，在 Paged Attention 中的不同序列通过将逻辑块映射到一 样的物理块上可以实现共享块。为了确保安全共享， Paged Attention 跟踪物理块的引用计数，并实现了 Copy-on-Write 机制。内存共享减少了 55% 内存使用量，大大降低了采样算法的内存开销，同时提升了高达 2.2 倍的吞吐量</p>
+<p><img src="https://pica.zhimg.com/v2-cab043f5f4d3ed2f4e369a542617fb22_b.webp" srcset="/img/loading.gif" lazyload title="Copy-on-Write"></p>
+<h2 id="不同解码策略下的用法"><a href="#不同解码策略下的用法" class="headerlink" title="不同解码策略下的用法"></a>不同解码策略下的用法</h2><p>给模型发送一个请求，希望它对 prompt 做续写，并给出多种不同的回答。我们管这个场景叫 parallel sampling。</p>
+<p><img src="/deeplearning/vllm/parallel_sample.png" srcset="/img/loading.gif" lazyload title="Parallel Sampling"></p>
+<ol>
+<li><p>prefill 阶段： vLLM 拿到 Sample A1和 Sample A2，根据其中的文字内容，为其分配逻辑块和物理块。 其中 A1 和 A2 的 block0 和 block1 是共享的。</p>
+</li>
+<li><p>decoder 阶段：<strong>当两个 sample 生成的 token 不一致时，触发 Copy-on-Write</strong>，即在物理内存上新开辟一块空间。此时物理块 block1 只和 A2 的逻辑块 block1 映射，将其 ref count 减去 1；物理块 block3 只和 A1 的逻辑块 block1 映射，将 其 ref count 设为1。</p>
+<blockquote>
+<p>ref count：引用计数，即有多少个逻辑 block 引用该物理 block。</p>
+</blockquote>
+</li>
+</ol>
+
                 
               </div>
             
@@ -299,7 +346,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" class="category-chain-item">开发笔记</a>
+  <a href="/categories/%E7%AE%97%E6%B3%95%E6%9D%82%E8%AE%B0/" class="category-chain-item">算法杂记</a>
   
   
 
@@ -314,9 +361,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%BC%80%E5%8F%91/" class="print-no-link">#开发</a>
+        <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="print-no-link">#大模型</a>
       
-        <a href="/tags/git/" class="print-no-link">#git</a>
+        <a href="/tags/%E5%8A%A0%E9%80%9F%E6%8E%A8%E7%90%86/" class="print-no-link">#加速推理</a>
       
     </div>
   
@@ -328,8 +375,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Git 笔记</div>
-      <div>https://guokent.github.io/developnotes/git/</div>
+      <div>vLLM 加速推理框架</div>
+      <div>https://guokent.github.io/deeplearning/vllm/</div>
     </div>
     <div class="license-meta">
       
@@ -341,7 +388,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年12月23日</div>
+          <div>2025年3月8日</div>
         </div>
       
       
@@ -373,9 +420,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/developnotes/python/" title="Python">
+                      <a href="/deeplearning/posenc/" title="位置编码">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Python</span>
+                        <span class="hidden-mobile">位置编码</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -383,8 +430,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/papernotes/clip/" title="CLIP 系列">
-                        <span class="hidden-mobile">CLIP 系列</span>
+                      <a href="/deeplearning/kvcache/" title="KV Cache">
+                        <span class="hidden-mobile">KV Cache</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

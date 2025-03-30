@@ -19,22 +19,26 @@
   <meta name="author" content="Kent">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
-<meta property="og:title" content="CLIP">
+    <meta name="description" content="介绍CLIP (Contrastive Language-Image Pre-Training) 是 OpenAI 在 2O21 年发布的一个预训练模型，用于匹配图像和文本。它是多模态研究领域的经典之作。 论文： Learning Transferable Visual Models From Natural Language Supervision 模型结构CLIP模型包含两个主要部分：   T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CLIP 系列">
 <meta property="og:url" content="https://guokent.github.io/papernotes/clip/index.html">
 <meta property="og:site_name" content="KentGuoK">
+<meta property="og:description" content="介绍CLIP (Contrastive Language-Image Pre-Training) 是 OpenAI 在 2O21 年发布的一个预训练模型，用于匹配图像和文本。它是多模态研究领域的经典之作。 论文： Learning Transferable Visual Models From Natural Language Supervision 模型结构CLIP模型包含两个主要部分：   T">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://guokent.github.io/papernotes/clip/clip.png">
 <meta property="article:published_time" content="2024-12-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-02-06T16:35:03.563Z">
+<meta property="article:modified_time" content="2025-03-27T08:35:35.405Z">
 <meta property="article:author" content="Kent">
 <meta property="article:tag" content="大模型">
 <meta property="article:tag" content="多模态">
 <meta property="article:tag" content="论文">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://guokent.github.io/papernotes/clip/clip.png">
   
   
   
-  <title>CLIP - KentGuoK</title>
+  <title>CLIP 系列 - KentGuoK</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -200,7 +204,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CLIP"></span>
+            <span id="subtitle" data-typed-text="CLIP 系列"></span>
           
         </div>
 
@@ -223,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          397 字
         
       </span>
     
@@ -234,7 +238,7 @@
         
         
         
-          1 分钟
+          4 分钟
         
       </span>
     
@@ -271,12 +275,39 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">CLIP</h1>
+            <h1 id="seo-header">CLIP 系列</h1>
             
             
               <div class="markdown-body">
                 
-                
+                <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>CLIP (Contrastive Language-Image Pre-Training) 是 OpenAI 在 2O21 年发布的一个预训练模型，用于匹配图像和文本。它是多模态研究领域的经典之作。</p>
+<p><strong>论文：</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2103.00020">Learning Transferable Visual Models From Natural Language Supervision</a></p>
+<h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p>CLIP模型包含两个主要部分： </p>
+<ol>
+<li><strong>Text Encoder</strong>：用于对文本进行编码，生成文本的 Embedding。采用经典的 Text Transformer 模型。 </li>
+<li><strong>Image Encoder</strong>：用于对图片进行编码，生成图片的 Embedding。作者还尝试了 ResNet、EfficientNet、Transformer、最大用了ViT。 这两个 Encoder 生成的 Embedding 都是固定长度的单一向量。</li>
+</ol>
+<p><img src="/papernotes/clip/clip.png" srcset="/img/loading.gif" lazyload titile="CLIP 架构"></p>
+<h1 id="训练原理"><a href="#训练原理" class="headerlink" title="训练原理"></a>训练原理</h1><p>CLIP 的训练过程基于对比学习，具体步骤如下： </p>
+<ol>
+<li><strong>数据格式</strong>：假设一个批次中有 64个文本图像对，每个对包含一个文本和一个图像。 </li>
+<li><strong>编码</strong>：通过 Text Encoder 和 Image Encoder 分别生成文本和图像的 Embedding，得到 ： <ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>Emb</mtext><mrow><mi>v</mi><mi>i</mi><mi>s</mi><mi>u</mi><mi>a</mi><mi>l</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\text{Emb}_{visual}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord text"><span class="mord">Emb</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">s</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo separator="true">,</mo><msub><mi>d</mi><mrow><mi>e</mi><mi>m</mi><mi>b</mi></mrow></msub><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[batch, d_{emb}]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">mb</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>Emb</mtext><mrow><mi>t</mi><mi>e</mi><mi>x</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\text{Emb}_{text}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord text"><span class="mord">Emb</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">x</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo separator="true">,</mo><msub><mi>d</mi><mrow><mi>e</mi><mi>m</mi><mi>b</mi></mrow></msub><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[batch, d_{emb}]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">mb</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></li>
+</ul>
+</li>
+<li><strong>正负样本</strong>：<ul>
+<li>对于每个文本，其他 63 个图像是负样本。</li>
+<li>对于每个图像，其他 63 个文本是负样本。 </li>
+</ul>
+</li>
+<li><strong>相似度计算</strong>：使用 visual_embedding 和 text_embedding 进行叉乘，得到一个 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>shape</mtext><mo>=</mo><mo stretchy="false">(</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo separator="true">,</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\text{shape}=(batch, batch)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">shape</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mclose">)</span></span></span></span> 的矩阵。矩阵对角线上的值是成对特征的内积，表示正样本的相似度。</li>
+<li><strong>损失计算</strong>：对于每一行(即每个图像与所有文本的相似度)，将正样本的标签设置为1，使用交叉熵损失函数进行训练，目标是使正样本的内积尽可能大。</li>
+</ol>
+<!-- # 代码实现 -->
+<hr>
+<p>官方参考：<a target="_blank" rel="noopener" href="https://github.com/openai/CLIP/blob/main/clip/model.py">https://github.com/openai/CLIP/blob/main/clip/model.py</a></p>
+
                 
               </div>
             
@@ -325,7 +356,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CLIP</div>
+      <div>CLIP 系列</div>
       <div>https://guokent.github.io/papernotes/clip/</div>
     </div>
     <div class="license-meta">
@@ -380,8 +411,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/papernotes/blip/" title="BLIP">
-                        <span class="hidden-mobile">BLIP</span>
+                      <a href="/papernotes/qwen/" title="Qwen 系列">
+                        <span class="hidden-mobile">Qwen 系列</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
