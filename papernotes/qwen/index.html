@@ -19,25 +19,27 @@
   <meta name="author" content="Kent">
   <meta name="keywords" content="">
   
-    <meta name="description" content="QwenQwen 2Qwen 2.5Qwen-VL项目地址： https:&#x2F;&#x2F;github.com&#x2F;QwenLM&#x2F;Qwen-VL论文： Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond 模型架构大型语言模型(Large Language Model">
+    <meta name="description" content="QwenQwen 2Qwen 2.5Qwen 3项目地址: https:&#x2F;&#x2F;github.com&#x2F;QwenLM&#x2F;Qwen3论文: Qwen3 Technical Report 模型架构 常规结构：GQA、RoPE、SwiGLU、RMSNorm，BBPE 分词法 128 专家层，每个 token 激活 8 个专家，包含共享专家层(参考DeepSeek) 引入全局 Batch 平衡损失  数据处理步骤">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Qwen 系列">
 <meta property="og:url" content="https://guokent.github.io/papernotes/qwen/index.html">
 <meta property="og:site_name" content="KentGuoK">
-<meta property="og:description" content="QwenQwen 2Qwen 2.5Qwen-VL项目地址： https:&#x2F;&#x2F;github.com&#x2F;QwenLM&#x2F;Qwen-VL论文： Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond 模型架构大型语言模型(Large Language Model">
+<meta property="og:description" content="QwenQwen 2Qwen 2.5Qwen 3项目地址: https:&#x2F;&#x2F;github.com&#x2F;QwenLM&#x2F;Qwen3论文: Qwen3 Technical Report 模型架构 常规结构：GQA、RoPE、SwiGLU、RMSNorm，BBPE 分词法 128 专家层，每个 token 激活 8 个专家，包含共享专家层(参考DeepSeek) 引入全局 Batch 平衡损失  数据处理步骤">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://guokent.github.io/papernotes/qwen/qwen3cpt.png">
+<meta property="og:image" content="https://guokent.github.io/papernotes/qwen/qwen3sftdata.png">
 <meta property="og:image" content="https://guokent.github.io/papernotes/qwen/qwen.png">
 <meta property="og:image" content="https://guokent.github.io/papernotes/qwen/dataclean.png">
 <meta property="og:image" content="https://guokent.github.io/papernotes/qwen/qwen2vl.png">
 <meta property="og:image" content="https://guokent.github.io/papernotes/qwen/qwen25vl.png">
 <meta property="article:published_time" content="2024-12-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-03-30T12:48:42.806Z">
+<meta property="article:modified_time" content="2025-05-29T02:02:13.460Z">
 <meta property="article:author" content="Kent">
 <meta property="article:tag" content="大模型">
 <meta property="article:tag" content="多模态">
 <meta property="article:tag" content="论文">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://guokent.github.io/papernotes/qwen/qwen.png">
+<meta name="twitter:image" content="https://guokent.github.io/papernotes/qwen/qwen3cpt.png">
   
   
   
@@ -230,7 +232,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k 字
+          3.2k 字
         
       </span>
     
@@ -241,7 +243,7 @@
         
         
         
-          14 分钟
+          27 分钟
         
       </span>
     
@@ -283,8 +285,88 @@
             
               <div class="markdown-body">
                 
-                <h1 id="Qwen"><a href="#Qwen" class="headerlink" title="Qwen"></a>Qwen</h1><h1 id="Qwen-2"><a href="#Qwen-2" class="headerlink" title="Qwen 2"></a>Qwen 2</h1><h1 id="Qwen-2-5"><a href="#Qwen-2-5" class="headerlink" title="Qwen 2.5"></a>Qwen 2.5</h1><h1 id="Qwen-VL"><a href="#Qwen-VL" class="headerlink" title="Qwen-VL"></a>Qwen-VL</h1><p><strong>项目地址：</strong> <a target="_blank" rel="noopener" href="https://github.com/QwenLM/Qwen-VL">https://github.com/QwenLM/Qwen-VL</a><br><strong>论文：</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.12966">Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond</a></p>
-<h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><h3 id="大型语言模型-Large-Language-Model"><a href="#大型语言模型-Large-Language-Model" class="headerlink" title="大型语言模型(Large Language Model)"></a>大型语言模型(Large Language Model)</h3><ul>
+                <h1 id="Qwen"><a href="#Qwen" class="headerlink" title="Qwen"></a>Qwen</h1><h1 id="Qwen-2"><a href="#Qwen-2" class="headerlink" title="Qwen 2"></a>Qwen 2</h1><h1 id="Qwen-2-5"><a href="#Qwen-2-5" class="headerlink" title="Qwen 2.5"></a>Qwen 2.5</h1><h1 id="Qwen-3"><a href="#Qwen-3" class="headerlink" title="Qwen 3"></a>Qwen 3</h1><p><strong>项目地址:</strong> <a target="_blank" rel="noopener" href="https://github.com/QwenLM/Qwen3">https://github.com/QwenLM/Qwen3</a><br><strong>论文:</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2505.09388">Qwen3 Technical Report</a></p>
+<h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><ul>
+<li>常规结构：GQA、RoPE、SwiGLU、RMSNorm，BBPE 分词法</li>
+<li>128 专家层，每个 token 激活 8 个专家，包含共享专家层(参考DeepSeek)</li>
+<li>引入全局 Batch 平衡损失</li>
+</ul>
+<h2 id="数据处理步骤"><a href="#数据处理步骤" class="headerlink" title="数据处理步骤"></a>数据处理步骤</h2><ol>
+<li>Qwen2.5-VL 处理 PDF 文件，形成文字数据集</li>
+<li>Qwen2.5 对得到的文字数据集进行进一步处理，增强数据形式</li>
+<li>Qwen2.5、Qwen2.5-Math、Qwen2.5-Coder 分别进行领域内数据格式处理，如 Q&amp;A 对、科普文本块、代码片段等</li>
+<li>最后引入多语言版本，提高交叉语言能力(29➡️119)</li>
+</ol>
+<h2 id="预训练阶段"><a href="#预训练阶段" class="headerlink" title="预训练阶段"></a>预训练阶段</h2><ol>
+<li><strong>General Stage(S1):</strong> Sequence 长度 4096，语言种类 119，数据量 30 T，<strong>学习通用知识</strong></li>
+<li><strong>Reasoning Stage(S2):</strong> <strong>提高模型理解能力</strong>，提高科学类数据(STEM)的比例，Sequence 长度 4096，数据量 5T，采用学习率衰减加速学习</li>
+<li><strong>Long Context Stage:</strong> <strong>提高模型长文本能力</strong>，Sequence 长度增加到 32768，长文本(16384-32768)占 75%，短文本(4096-16384)占 25%；用 ABF 将 RoPE 从 1w 长度外推至 100w；推理阶段采用 YARN 和 Dual Chunk Attention(DCA) 实现 Sequence len 的 4-fold 提升</li>
+</ol>
+<hr>
+<h3 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h3><p><strong>评估任务：</strong> 通用任务、数学&amp;科学任务、代码任务、多语言任务</p>
+<ol>
+<li>综合表现超越现有的 SOTA 模型</li>
+<li>Qwen3-MoE 相比于 Qwen3-Dense 仅有 <strong>1/5</strong> 的激活参数</li>
+<li>Qwen3-MoE 相比于 Qwen2.5-MoE 仅有 <strong>1/2</strong> 的激活参数</li>
+<li>Qwen3-MoE 相比于 Qwen2.5-Dense 仅有 <strong>1/10</strong> 的激活参数，并且效果不输于后者</li>
+</ol>
+<hr>
+<h2 id="后训练阶段"><a href="#后训练阶段" class="headerlink" title="后训练阶段"></a>后训练阶段</h2><p><img src="/papernotes/qwen/qwen3cpt.png" srcset="/img/loading.gif" lazyload title="Qwen3 后训练流程"></p>
+<h3 id="Stage1-长-CoT-冷启动"><a href="#Stage1-长-CoT-冷启动" class="headerlink" title="Stage1-长 CoT 冷启动:"></a>Stage1-长 CoT 冷启动:</h3><ul>
+<li>包括查询过滤(query filtering)和回复过滤(response filtering)。</li>
+<li><strong>查询过滤</strong>：使用 Qwen2.5-72B-Instruct 移除难以验证的问题，以及 不需要思维链直接回答的问题</li>
+<li><strong>回答过滤</strong>：使用 QwQ-32B 对每个问题生成 N 个回答，对于具有 <strong>正Pass@N</strong> 的查询，用更加严格的筛选条件来删除回复。<blockquote>
+<p>For queries with positive Pass@N, further stringent filtering criteria are applied to remove responses that (1) yield incorrect final answers, (2) contain substantial repetition, (3) clearly indicate guesswork without adequate reasoning, (4) exhibit inconsistencies between the thinking and summary contents, (5) involve inappropriate language mixing or stylistic shifts, or (6) are suspected of being overly similar to potential validation set items. Subsequently, a carefully selected subset of the refined dataset is used for the initial cold-start training of the reasoning patterns.</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>此阶段的目标是在模型中灌输基础推理模式，但不要过分强调即时推理性能。这种方法确保模型的潜力不受限制，从而在随后的强化学习(RL)阶段实现更大的灵活性和改进。</strong></p>
+<h3 id="Stage2-理解强化学习"><a href="#Stage2-理解强化学习" class="headerlink" title="Stage2-理解强化学习:"></a>Stage2-理解强化学习:</h3><ul>
+<li>收集 3995 个符合规则的查询，进行 GRPO 强化学习</li>
+<li>使用大 batch size 和对每个查询进行大数量的回答有利于训的稳定<blockquote>
+<p><strong>Query-verifier 对的挑选规则：</strong></p>
+<ol>
+<li>在冷启动阶段未使用它们</li>
+<li>对于冷启动模型来说，它们是可以学习的</li>
+<li>他们尽可能具有挑战性</li>
+<li>它们涵盖了广泛的子域</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h3 id="Stage3-思考模式融合"><a href="#Stage3-思考模式融合" class="headerlink" title="Stage3-思考模式融合:"></a>Stage3-思考模式融合:</h3><p>这一步的目的是将“无思考”模式集成到前面的思考模型中，通过对前面的强化学习模型进行监督微调(SFT)来实现，并且设计一个聊天模板来融合两种模式。</p>
+<p><img src="/papernotes/qwen/qwen3sftdata.png" srcset="/img/loading.gif" lazyload title="SFT 数据构造"></p>
+<ul>
+<li><strong>SFT 数据:</strong> 为了确保 Stage2 模型的性能不会受到 SFT 的损害，使用 Stage2 模型本身在 Stage1 查询上进行拒绝采样生成“思考”数据。</li>
+<li><strong>聊天模板设计:</strong> 为了更好地融合思考和非思考模式，分别在用户查询或系统信息中设计 <code>\think</code>和<code>\no_think</code>标志来进行模式切换。</li>
+<li><strong>思维预算:</strong> 当模型的思考长度达到用户定义的阈值时，会手动停止思维过程来提供最终解决方案。<font color="blue">“考虑用户有限的时间，我必须直接基于思维来提供解决方案。”</font> 插入此指令后，该模型将根据其累积的推理产生最终响应。<font color="red">这种能力没有明确训练，而是由于应用思维模式融合而自然出现的。</font></li>
+</ul>
+<h3 id="Stage4-通用强化学习"><a href="#Stage4-通用强化学习" class="headerlink" title="Stage4-通用强化学习:"></a>Stage4-通用强化学习:</h3><p>这一阶段的目的是增强模型的核心功能，涵盖了20多个不同的任务，每个任务都具有定制的评分标准。这些任务在以下核心功能中专门针对增强功能：<strong>指令遵循、格式遵循、偏好对齐、代理能力、专业场景能力</strong></p>
+<blockquote>
+<ul>
+<li><strong>偏好对齐</strong>：对于开放式查询，偏好一致性重点是改善模型的乐趣，参与度和风格，最终提供更自然，更令人满意的用户体验</li>
+<li><strong>代理能力</strong>：训练模型通过指定接口正确调用工具。在RL推出期间，允许模型使用真实的环境执行反馈执行完整的多转交互周期，从而改善了长距离决策任务的性能和稳定性。</li>
+<li><strong>专业场景的能力</strong>：在更专业的方案中，设计针对特定上下文的任务。例如，在RAG任务中，合并了奖励信号，以指导模型产生准确且上下文适当的响应，从而最大程度地减少了幻觉的风险。</li>
+</ul>
+</blockquote>
+<p>为了提供上述任务的反馈，利用了三种不同类型的奖励：</p>
+<ul>
+<li><strong>基于规则的奖励:</strong> 对于诸如教学之类的一般任务和格式服从性等一般任务，精心设计的基于规则的奖励可以以高精度评估模型输出的正确性，从而防止奖励黑客攻击。</li>
+<li><strong>带有参考答案的基于模型的奖励:</strong> 为每个查询提供一个参考答案，并通过 Qwen2.5-72B-Instruct 根据此参考为模型的响应评分。此方法允许在不需要严格格式的情况下更灵活地处理各种任务，避免使用纯粹基于规则的奖励发生的虚假负面因素。</li>
+<li><strong>无参考答案的基于模型的奖励:</strong> 利用人类偏好数据，训练一个奖励模型，为模型响应分配标量分数。这种方法不依赖于参考答案，可以处理更广泛的查询，同时有效地提高模型的参与度和实用性。</li>
+</ul>
+<h3 id="Stahe5-蒸馏小模型"><a href="#Stahe5-蒸馏小模型" class="headerlink" title="Stahe5-蒸馏小模型:"></a>Stahe5-蒸馏小模型:</h3><ul>
+<li><p><strong>线下策略蒸馏:</strong> 初始阶段，利用教师模型的<code>/think</code>和<code>/no_think</code>模式来进行学生模型的蒸馏，给学生模型基本的模式转换能力。</p>
+</li>
+<li><p><strong>线上策略蒸馏:</strong> 对学生模型进行微调，对 prompt 进行采样，并且将输出与其教师模型的输出进行对齐，最小化 KL 散度。</p>
+</li>
+</ul>
+<h2 id="对比-Qwen2-5"><a href="#对比-Qwen2-5" class="headerlink" title="对比 Qwen2.5"></a>对比 Qwen2.5</h2><ol>
+<li>移除 Qwen2.5 中的 QK-bias，加入 QK-Norm 来稳定训练</li>
+<li>MoE 模式</li>
+</ol>
+<h1 id="Qwen-VL"><a href="#Qwen-VL" class="headerlink" title="Qwen-VL"></a>Qwen-VL</h1><p><strong>项目地址：</strong> <a target="_blank" rel="noopener" href="https://github.com/QwenLM/Qwen-VL">https://github.com/QwenLM/Qwen-VL</a><br><strong>论文：</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.12966">Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond</a></p>
+<h2 id="模型架构-1"><a href="#模型架构-1" class="headerlink" title="模型架构"></a>模型架构</h2><h3 id="大型语言模型-Large-Language-Model"><a href="#大型语言模型-Large-Language-Model" class="headerlink" title="大型语言模型(Large Language Model)"></a>大型语言模型(Large Language Model)</h3><ul>
 <li><strong>作用：</strong> 作为模型的基础组件，负责文本生成和理解</li>
 <li><strong>初始化：</strong> 使用预训练的 Qwen-7B 模型权重</li>
 </ul>
@@ -349,7 +431,7 @@
 <li><strong>引入动态分辨率训练</strong>，使用二维旋转位置嵌入(RoPE)增强模型对不同分辨率的适应性</li>
 <li>开发<strong>多模态旋转位置嵌入</strong> (M-RoPE)，通过独立的组件表示时间和空间信息，提升对动态内容（如视频）的理解能力</li>
 </ul>
-<h2 id="模型架构-1"><a href="#模型架构-1" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/papernotes/qwen/qwen2vl.png" srcset="/img/loading.gif" lazyload title="Qwen-2VL 模型架构"></p>
+<h2 id="模型架构-2"><a href="#模型架构-2" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/papernotes/qwen/qwen2vl.png" srcset="/img/loading.gif" lazyload title="Qwen-2VL 模型架构"></p>
 <ul>
 <li><strong>框架基础：</strong> 保留了 Qwen-VL 的框架，集成了视觉编码器和语言模型</li>
 <li><strong>视觉编码器：</strong> 采用 675M 参数的 ViT，支持图像和视频输入</li>
@@ -378,7 +460,7 @@
 <li>动态调整视频帧分辨率，将每个视频的token总数限制为 16384，平衡计算需求与训练效率</li>
 </ul>
 <h1 id="Qwen-2-5VL"><a href="#Qwen-2-5VL" class="headerlink" title="Qwen-2.5VL"></a>Qwen-2.5VL</h1><p><strong>论文：</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2502.13923">Qwen2.5- VL Technical Report</a><br><strong>模型：</strong> <a target="_blank" rel="noopener" href="https://huggingface.co/Qwen">https://huggingface.co/Qwen</a><br><strong>代码：</strong> <a target="_blank" rel="noopener" href="https://github.com/QwenLM/Qwen2.5-VL">https://github.com/QwenLM/Qwen2.5-VL</a></p>
-<h2 id="模型架构-2"><a href="#模型架构-2" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/papernotes/qwen/qwen25vl.png" srcset="/img/loading.gif" lazyload title="Qwen-2.5VL 架构"></p>
+<h2 id="模型架构-3"><a href="#模型架构-3" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/papernotes/qwen/qwen25vl.png" srcset="/img/loading.gif" lazyload title="Qwen-2.5VL 架构"></p>
 <ul>
 <li><strong>模态对齐方法：</strong> ViT 之后采用双层 MLP 实现模态对齐，Qwen-2VL 仅使用单层</li>
 <li><strong>视觉编码器：</strong> <ul>
@@ -508,9 +590,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/papernotes/clip/" title="CLIP 系列">
+                      <a href="/papernotes/llava/" title="LLaVA 系列">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">CLIP 系列</span>
+                        <span class="hidden-mobile">LLaVA 系列</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     

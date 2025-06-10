@@ -19,26 +19,29 @@
   <meta name="author" content="Kent">
   <meta name="keywords" content="">
   
-    <meta name="description" content="介绍CLIP (Contrastive Language-Image Pre-Training) 是 OpenAI 在 2O21 年发布的一个预训练模型，用于匹配图像和文本。它是多模态研究领域的经典之作。 论文： Learning Transferable Visual Models From Natural Language Supervision 模型结构CLIP模型包含两个主要部分：   T">
+    <meta name="description" content="LLaVA: Visual Instruction Tuning项目地址: https:&#x2F;&#x2F;github.com&#x2F;haotian-liu&#x2F;LLaVA论文: LLaVA Technical Report 简介LLaVA模型的架构，是将一个预训练的视觉编码器（CLIP ViT-L&#x2F;14）与一个大规模语言模型（Vicuna）连接在一起。这两个模型通过一个简单的映射矩阵连接，这个矩阵负责将视觉和语言特征对">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CLIP 系列">
-<meta property="og:url" content="https://guokent.github.io/papernotes/clip/index.html">
+<meta property="og:title" content="LLaVA 系列">
+<meta property="og:url" content="https://guokent.github.io/papernotes/llava/index.html">
 <meta property="og:site_name" content="KentGuoK">
-<meta property="og:description" content="介绍CLIP (Contrastive Language-Image Pre-Training) 是 OpenAI 在 2O21 年发布的一个预训练模型，用于匹配图像和文本。它是多模态研究领域的经典之作。 论文： Learning Transferable Visual Models From Natural Language Supervision 模型结构CLIP模型包含两个主要部分：   T">
+<meta property="og:description" content="LLaVA: Visual Instruction Tuning项目地址: https:&#x2F;&#x2F;github.com&#x2F;haotian-liu&#x2F;LLaVA论文: LLaVA Technical Report 简介LLaVA模型的架构，是将一个预训练的视觉编码器（CLIP ViT-L&#x2F;14）与一个大规模语言模型（Vicuna）连接在一起。这两个模型通过一个简单的映射矩阵连接，这个矩阵负责将视觉和语言特征对">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://guokent.github.io/papernotes/clip/clip.png">
+<meta property="og:image" content="https://guokent.github.io/papernotes/llava/llava.png">
+<meta property="og:image" content="https://guokent.github.io/papernotes/llava/caption.png">
+<meta property="og:image" content="https://guokent.github.io/papernotes/llava/t_qa.png">
+<meta property="og:image" content="https://guokent.github.io/papernotes/llava/llava1_5.png">
 <meta property="article:published_time" content="2024-12-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-03-27T08:35:35.405Z">
+<meta property="article:modified_time" content="2025-06-10T08:42:02.309Z">
 <meta property="article:author" content="Kent">
 <meta property="article:tag" content="大模型">
 <meta property="article:tag" content="多模态">
 <meta property="article:tag" content="论文">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://guokent.github.io/papernotes/clip/clip.png">
+<meta name="twitter:image" content="https://guokent.github.io/papernotes/llava/llava.png">
   
   
   
-  <title>CLIP 系列 - KentGuoK</title>
+  <title>LLaVA 系列 - KentGuoK</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -204,7 +207,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CLIP 系列"></span>
+            <span id="subtitle" data-typed-text="LLaVA 系列"></span>
           
         </div>
 
@@ -227,7 +230,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          397 字
+          654 字
         
       </span>
     
@@ -238,7 +241,7 @@
         
         
         
-          4 分钟
+          6 分钟
         
       </span>
     
@@ -275,38 +278,45 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">CLIP 系列</h1>
+            <h1 id="seo-header">LLaVA 系列</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>CLIP (Contrastive Language-Image Pre-Training) 是 OpenAI 在 2O21 年发布的一个预训练模型，用于匹配图像和文本。它是多模态研究领域的经典之作。</p>
-<p><strong>论文：</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2103.00020">Learning Transferable Visual Models From Natural Language Supervision</a></p>
-<h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p>CLIP模型包含两个主要部分： </p>
-<ol>
-<li><strong>Text Encoder</strong>：用于对文本进行编码，生成文本的 Embedding。采用经典的 Text Transformer 模型。 </li>
-<li><strong>Image Encoder</strong>：用于对图片进行编码，生成图片的 Embedding。作者还尝试了 ResNet、EfficientNet、Transformer、最大用了ViT。 这两个 Encoder 生成的 Embedding 都是固定长度的单一向量。</li>
-</ol>
-<p><img src="/papernotes/clip/clip.png" srcset="/img/loading.gif" lazyload titile="CLIP 架构"></p>
-<h1 id="训练原理"><a href="#训练原理" class="headerlink" title="训练原理"></a>训练原理</h1><p>CLIP 的训练过程基于对比学习，具体步骤如下： </p>
-<ol>
-<li><strong>数据格式</strong>：假设一个批次中有 64个文本图像对，每个对包含一个文本和一个图像。 </li>
-<li><strong>编码</strong>：通过 Text Encoder 和 Image Encoder 分别生成文本和图像的 Embedding，得到 ： <ul>
-<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>Emb</mtext><mrow><mi>v</mi><mi>i</mi><mi>s</mi><mi>u</mi><mi>a</mi><mi>l</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\text{Emb}_{visual}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord text"><span class="mord">Emb</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">s</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo separator="true">,</mo><msub><mi>d</mi><mrow><mi>e</mi><mi>m</mi><mi>b</mi></mrow></msub><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[batch, d_{emb}]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">mb</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></li>
-<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>Emb</mtext><mrow><mi>t</mi><mi>e</mi><mi>x</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\text{Emb}_{text}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord text"><span class="mord">Emb</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">x</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo separator="true">,</mo><msub><mi>d</mi><mrow><mi>e</mi><mi>m</mi><mi>b</mi></mrow></msub><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[batch, d_{emb}]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">mb</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></li>
+                <h1 id="LLaVA-Visual-Instruction-Tuning"><a href="#LLaVA-Visual-Instruction-Tuning" class="headerlink" title="LLaVA: Visual Instruction Tuning"></a>LLaVA: Visual Instruction Tuning</h1><p><strong>项目地址:</strong> <a target="_blank" rel="noopener" href="https://github.com/haotian-liu/LLaVA">https://github.com/haotian-liu/LLaVA</a><br><strong>论文:</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.08485">LLaVA Technical Report</a></p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>LLaVA模型的架构，是将一个预训练的视觉编码器（CLIP ViT-L/14）与一个大规模语言模型（Vicuna）连接在一起。<br>这两个模型通过一个简单的映射矩阵连接，这个矩阵负责将视觉和语言特征对齐或转换，以便在一个统一的空间内对它们进行操作。<br>在多模态指令跟随数据集上，LLaVA表现出色，跟GPT-4相比，分数达到了85.1%。在Science QA上，LLaVA的准确率刷新了纪录，达到92.53%。</p>
+<p><strong>核心思想</strong>：LLaVA 提出了视觉指令微调数据集的三种构造方式和两阶段图文训练。</p>
+<h2 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h2><p><img src="/papernotes/llava/llava.png" srcset="/img/loading.gif" lazyload title="LLaVA 架构"></p>
+<ul>
+<li>图像编码器：采用 CLIP 中的预训练的 VIT-L/14</li>
+<li>使用单层线性层实现图文 embedding 对齐</li>
+<li>LLM 部分采用 Vicuna</li>
 </ul>
-</li>
-<li><strong>正负样本</strong>：<ul>
-<li>对于每个文本，其他 63 个图像是负样本。</li>
-<li>对于每个图像，其他 63 个文本是负样本。 </li>
+<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p><img src="/papernotes/llava/caption.png" srcset="/img/loading.gif" lazyload title="GPT4 生成数据"></p>
+<p>当前没有视觉-语言指令数据集，借助 GPT4 首先将图片翻译成单一目标的 caption 和其位置为 box。全部图片转为文字 token 后+prompt 输入到 GPT4 得到带指令的图文对，共三种类型：</p>
+<ul>
+<li>Conversation：简短多轮对话</li>
+<li>Detailed description：单次详细问答</li>
+<li>Complex reasoning：复杂语义推理</li>
 </ul>
-</li>
-<li><strong>相似度计算</strong>：使用 visual_embedding 和 text_embedding 进行叉乘，得到一个 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>shape</mtext><mo>=</mo><mo stretchy="false">(</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo separator="true">,</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\text{shape}=(batch, batch)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">shape</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mclose">)</span></span></span></span> 的矩阵。矩阵对角线上的值是成对特征的内积，表示正样本的相似度。</li>
-<li><strong>损失计算</strong>：对于每一行(即每个图像与所有文本的相似度)，将正样本的标签设置为1，使用交叉熵损失函数进行训练，目标是使正样本的内积尽可能大。</li>
-</ol>
-<!-- # 代码实现 -->
-<hr>
-<p>官方参考：<a target="_blank" rel="noopener" href="https://github.com/openai/CLIP/blob/main/clip/model.py">https://github.com/openai/CLIP/blob/main/clip/model.py</a></p>
+<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>多轮对话训练，生成多轮对话问答数据，构造 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>X</mi><mrow><mi>I</mi><mi>n</mi><mi>s</mi><mi>t</mi><mi>r</mi><mi>u</mi><mi>c</mi><mi>t</mi></mrow><mi>t</mi></msubsup><mo>=</mo><mo stretchy="false">(</mo><msubsup><mi>X</mi><mi>q</mi><mn>1</mn></msubsup><mo separator="true">,</mo><msubsup><mi>X</mi><mi>a</mi><mn>1</mn></msubsup><mo separator="true">,</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo separator="true">,</mo><msubsup><mi>X</mi><mi>q</mi><mi>t</mi></msubsup><mo separator="true">,</mo><msubsup><mi>X</mi><mi>a</mi><mi>t</mi></msubsup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">X^t_{Instruct}=(X^1_q,X^1_a,...,X^t_q,X^t_a)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0689em;vertical-align:-0.2753em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7936em;"><span style="top:-2.4247em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">I</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">s</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight">t</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2753em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1972em;vertical-align:-0.3831em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-2.453em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3831em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-2.453em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">...</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7936em;"><span style="top:-2.453em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3831em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7936em;"><span style="top:-2.453em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，代表 t 轮对话数据。在第一轮，图像输入和问题输入的顺序随机打乱，后续直接添加第 t 轮的问题即可：</p>
+<p><img src="/papernotes/llava/t_qa.png" srcset="/img/loading.gif" lazyload title="t 轮对话数据"></p>
+<h3 id="两阶段训练"><a href="#两阶段训练" class="headerlink" title="两阶段训练"></a>两阶段训练</h3><ul>
+<li><strong>Stage-1 预训练特征对齐</strong>：冻结视觉编码器和 LLM 模块，仅训练投影层 W，目的是将预训练的 ViT 和 LLM 的 embedding 进行对齐。</li>
+<li><strong>Stage-2 端到端微调</strong>：冻结视觉编码器，训练投影层 W 和 LLM 模块，主要从科学问答和多模态聊天机器人两个场景进行训练。</li>
+</ul>
+<h1 id="LLaVA1-5-Improve-Baselines-with-Visual-Instruction-Tuning"><a href="#LLaVA1-5-Improve-Baselines-with-Visual-Instruction-Tuning" class="headerlink" title="LLaVA1.5: Improve Baselines with Visual Instruction Tuning"></a>LLaVA1.5: Improve Baselines with Visual Instruction Tuning</h1><p><strong>项目地址:</strong> <a target="_blank" rel="noopener" href="https://github.com/haotian-liu/LLaVA">https://github.com/haotian-liu/LLaVA</a><br><strong>论文:</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.03744">LLaVA1.5 Technical Report</a></p>
+<h2 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h2><p><strong>核心改进</strong>：通过更改 LLaVA 结构，构建新数据，重构 prompt 格式来实现模型能力增强（8 张 A100 训练一天）。</p>
+<p><img src="/papernotes/llava/llava1_5.png" srcset="/img/loading.gif" lazyload title="LLaVA1.5 架构"></p>
+<h2 id="模型结构-1"><a href="#模型结构-1" class="headerlink" title="模型结构"></a>模型结构</h2><ul>
+<li>模态对齐层由单层 MLP 改为双层， 实验发现使用2层MLP改善视觉语言连接器的表示能力可以提高LLAVA的多模态功能</li>
+<li>ClIP-Large 图像分辨率 336*336</li>
+<li>Vicuna v1.5 13B（原来 7B），理解更好</li>
+</ul>
+<h2 id="数据-1"><a href="#数据-1" class="headerlink" title="数据"></a>数据</h2><ul>
+<li>添加额外的面向学术任务问答数据集，OpenKonwledge VQA，region-level VQA，OCR VQA</li>
+<li>使用 ShareGPT 的数据进行指令微调，说明文本复杂指令能提升多模态理解</li>
+</ul>
 
                 
               </div>
@@ -356,8 +366,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CLIP 系列</div>
-      <div>https://guokent.github.io/papernotes/clip/</div>
+      <div>LLaVA 系列</div>
+      <div>https://guokent.github.io/papernotes/llava/</div>
     </div>
     <div class="license-meta">
       
@@ -401,9 +411,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/developnotes/git/" title="Git 笔记">
+                      <a href="/papernotes/internvl/" title="IntenVL 系列">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Git 笔记</span>
+                        <span class="hidden-mobile">IntenVL 系列</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -411,8 +421,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/papernotes/internvl/" title="IntenVL 系列">
-                        <span class="hidden-mobile">IntenVL 系列</span>
+                      <a href="/papernotes/qwen/" title="Qwen 系列">
+                        <span class="hidden-mobile">Qwen 系列</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

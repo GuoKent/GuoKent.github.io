@@ -19,26 +19,27 @@
   <meta name="author" content="Kent">
   <meta name="keywords" content="">
   
-    <meta name="description" content="介绍CLIP (Contrastive Language-Image Pre-Training) 是 OpenAI 在 2O21 年发布的一个预训练模型，用于匹配图像和文本。它是多模态研究领域的经典之作。 论文： Learning Transferable Visual Models From Natural Language Supervision 模型结构CLIP模型包含两个主要部分：   T">
+    <meta name="description" content="InternVL项目地址: https:&#x2F;&#x2F;github.com&#x2F;haotian-liu&#x2F;LLaVA论文: InternVL Technical Report 动机当前多模态大模型都是 Image Encoder + glue layer + LLM，但 Image Encoder + glue layer 的参数量远小于 LLM，导致图文信息没有得到好的融合。InternVL 通过缩放 Imag">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CLIP 系列">
-<meta property="og:url" content="https://guokent.github.io/papernotes/clip/index.html">
+<meta property="og:title" content="IntenVL 系列">
+<meta property="og:url" content="https://guokent.github.io/papernotes/internvl/index.html">
 <meta property="og:site_name" content="KentGuoK">
-<meta property="og:description" content="介绍CLIP (Contrastive Language-Image Pre-Training) 是 OpenAI 在 2O21 年发布的一个预训练模型，用于匹配图像和文本。它是多模态研究领域的经典之作。 论文： Learning Transferable Visual Models From Natural Language Supervision 模型结构CLIP模型包含两个主要部分：   T">
+<meta property="og:description" content="InternVL项目地址: https:&#x2F;&#x2F;github.com&#x2F;haotian-liu&#x2F;LLaVA论文: InternVL Technical Report 动机当前多模态大模型都是 Image Encoder + glue layer + LLM，但 Image Encoder + glue layer 的参数量远小于 LLM，导致图文信息没有得到好的融合。InternVL 通过缩放 Imag">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://guokent.github.io/papernotes/clip/clip.png">
+<meta property="og:image" content="https://guokent.github.io/papernotes/internvl/internvl.png">
+<meta property="og:image" content="https://guokent.github.io/papernotes/internvl/strategy.png">
 <meta property="article:published_time" content="2024-12-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-03-27T08:35:35.405Z">
+<meta property="article:modified_time" content="2025-06-10T12:46:56.915Z">
 <meta property="article:author" content="Kent">
 <meta property="article:tag" content="大模型">
 <meta property="article:tag" content="多模态">
 <meta property="article:tag" content="论文">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://guokent.github.io/papernotes/clip/clip.png">
+<meta name="twitter:image" content="https://guokent.github.io/papernotes/internvl/internvl.png">
   
   
   
-  <title>CLIP 系列 - KentGuoK</title>
+  <title>IntenVL 系列 - KentGuoK</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -204,7 +205,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CLIP 系列"></span>
+            <span id="subtitle" data-typed-text="IntenVL 系列"></span>
           
         </div>
 
@@ -227,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          397 字
+          308 字
         
       </span>
     
@@ -238,7 +239,7 @@
         
         
         
-          4 分钟
+          3 分钟
         
       </span>
     
@@ -275,38 +276,26 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">CLIP 系列</h1>
+            <h1 id="seo-header">IntenVL 系列</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>CLIP (Contrastive Language-Image Pre-Training) 是 OpenAI 在 2O21 年发布的一个预训练模型，用于匹配图像和文本。它是多模态研究领域的经典之作。</p>
-<p><strong>论文：</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2103.00020">Learning Transferable Visual Models From Natural Language Supervision</a></p>
-<h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p>CLIP模型包含两个主要部分： </p>
-<ol>
-<li><strong>Text Encoder</strong>：用于对文本进行编码，生成文本的 Embedding。采用经典的 Text Transformer 模型。 </li>
-<li><strong>Image Encoder</strong>：用于对图片进行编码，生成图片的 Embedding。作者还尝试了 ResNet、EfficientNet、Transformer、最大用了ViT。 这两个 Encoder 生成的 Embedding 都是固定长度的单一向量。</li>
-</ol>
-<p><img src="/papernotes/clip/clip.png" srcset="/img/loading.gif" lazyload titile="CLIP 架构"></p>
-<h1 id="训练原理"><a href="#训练原理" class="headerlink" title="训练原理"></a>训练原理</h1><p>CLIP 的训练过程基于对比学习，具体步骤如下： </p>
-<ol>
-<li><strong>数据格式</strong>：假设一个批次中有 64个文本图像对，每个对包含一个文本和一个图像。 </li>
-<li><strong>编码</strong>：通过 Text Encoder 和 Image Encoder 分别生成文本和图像的 Embedding，得到 ： <ul>
-<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>Emb</mtext><mrow><mi>v</mi><mi>i</mi><mi>s</mi><mi>u</mi><mi>a</mi><mi>l</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\text{Emb}_{visual}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord text"><span class="mord">Emb</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">s</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo separator="true">,</mo><msub><mi>d</mi><mrow><mi>e</mi><mi>m</mi><mi>b</mi></mrow></msub><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[batch, d_{emb}]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">mb</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></li>
-<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>Emb</mtext><mrow><mi>t</mi><mi>e</mi><mi>x</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\text{Emb}_{text}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord text"><span class="mord">Emb</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">x</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo separator="true">,</mo><msub><mi>d</mi><mrow><mi>e</mi><mi>m</mi><mi>b</mi></mrow></msub><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[batch, d_{emb}]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">mb</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></li>
+                <h1 id="InternVL"><a href="#InternVL" class="headerlink" title="InternVL"></a>InternVL</h1><p><strong>项目地址:</strong> <a target="_blank" rel="noopener" href="https://github.com/haotian-liu/LLaVA">https://github.com/haotian-liu/LLaVA</a><br><strong>论文:</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.14238">InternVL Technical Report</a></p>
+<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>当前多模态大模型都是 Image Encoder + glue layer + LLM，但 Image Encoder + glue layer 的参数量远小于 LLM，导致图文信息没有得到好的融合。InternVL 通过缩放 Image Encoder + glue layer 到 LLM 的参数规模，在视觉分类、语义分割、图文检索、视频检索、视频问答、图文问答等一系列任务取得更好的结果，开放榜单超过 GPT4V取得 sota。</p>
+<h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><ul>
+<li>视觉编码器：InternViT-6B</li>
+<li>中间件(模态对齐层)：QLLaMA（8B，由多语言 LLaMA-7B 初始化 + 1B 可学习 query）</li>
+<li>LLM 模块：Vicuna-13B</li>
 </ul>
-</li>
-<li><strong>正负样本</strong>：<ul>
-<li>对于每个文本，其他 63 个图像是负样本。</li>
-<li>对于每个图像，其他 63 个文本是负样本。 </li>
+<p><img src="/papernotes/internvl/internvl.png" srcset="/img/loading.gif" lazyload title="InternVL 架构"></p>
+<h2 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h2><p><img src="/papernotes/internvl/strategy.png" srcset="/img/loading.gif" lazyload title="InternVL 训练策略"></p>
+<p>模型整体架构为加强版的 BLIP2 模型，总共分为三阶段训练：</p>
+<ul>
+<li><strong>图文对比学习</strong>：从 60 亿开源图文对中清洗出 49.8 亿进行对比学习，两种形式，分别计算（InternVL Attention pooling 的向量和 EOS token embedding 对应投影后的cosine）、（query Attention pooling 的向量和 EOS token embedding 对应的投影后的 cosine），投影后 embedding 维度为 768</li>
+<li><strong>图文生成训练</strong>：进行 BLIP2 的 ITC、ITM、ITG 图文对齐训练，10 亿图文对，冻结上一步的 InternViT-6B和 LLaMA-7B，训练可学习的 query</li>
+<li><strong>监督微调</strong>：4M 数据，包含图文标题生成 caption、图文 OCR、视觉问答 VQA进行微调。</li>
 </ul>
-</li>
-<li><strong>相似度计算</strong>：使用 visual_embedding 和 text_embedding 进行叉乘，得到一个 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>shape</mtext><mo>=</mo><mo stretchy="false">(</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo separator="true">,</mo><mi>b</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\text{shape}=(batch, batch)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">shape</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">ba</span><span class="mord mathnormal">t</span><span class="mord mathnormal">c</span><span class="mord mathnormal">h</span><span class="mclose">)</span></span></span></span> 的矩阵。矩阵对角线上的值是成对特征的内积，表示正样本的相似度。</li>
-<li><strong>损失计算</strong>：对于每一行(即每个图像与所有文本的相似度)，将正样本的标签设置为1，使用交叉熵损失函数进行训练，目标是使正样本的内积尽可能大。</li>
-</ol>
-<!-- # 代码实现 -->
-<hr>
-<p>官方参考：<a target="_blank" rel="noopener" href="https://github.com/openai/CLIP/blob/main/clip/model.py">https://github.com/openai/CLIP/blob/main/clip/model.py</a></p>
 
                 
               </div>
@@ -356,8 +345,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CLIP 系列</div>
-      <div>https://guokent.github.io/papernotes/clip/</div>
+      <div>IntenVL 系列</div>
+      <div>https://guokent.github.io/papernotes/internvl/</div>
     </div>
     <div class="license-meta">
       
@@ -401,9 +390,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/developnotes/git/" title="Git 笔记">
+                      <a href="/papernotes/clip/" title="CLIP 系列">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Git 笔记</span>
+                        <span class="hidden-mobile">CLIP 系列</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -411,8 +400,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/papernotes/internvl/" title="IntenVL 系列">
-                        <span class="hidden-mobile">IntenVL 系列</span>
+                      <a href="/papernotes/llava/" title="LLaVA 系列">
+                        <span class="hidden-mobile">LLaVA 系列</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

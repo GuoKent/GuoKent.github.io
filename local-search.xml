@@ -20,40 +20,11 @@
     
     <tags>
       
+      <tag>算法</tag>
+      
       <tag>大模型</tag>
       
-      <tag>算法</tag>
-      
       <tag>强化学习</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>位置编码</title>
-    <link href="/deeplearning/posenc/"/>
-    <url>/deeplearning/posenc/</url>
-    
-    <content type="html"><![CDATA[<h1 id="绝对位置编码"><a href="#绝对位置编码" class="headerlink" title="绝对位置编码"></a>绝对位置编码</h1><h1 id="相对位置编码"><a href="#相对位置编码" class="headerlink" title="相对位置编码"></a>相对位置编码</h1><h1 id="可学习位置编码"><a href="#可学习位置编码" class="headerlink" title="可学习位置编码"></a>可学习位置编码</h1><h1 id="旋转位置编码-RoPE"><a href="#旋转位置编码-RoPE" class="headerlink" title="旋转位置编码(RoPE)"></a>旋转位置编码(RoPE)</h1>]]></content>
-    
-    
-    <categories>
-      
-      <category>算法杂记</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>算法</tag>
-      
-      <tag>深度学习</tag>
-      
-      <tag>基础</tag>
       
     </tags>
     
@@ -116,6 +87,35 @@
   
   
   <entry>
+    <title>位置编码</title>
+    <link href="/deeplearning/posenc/"/>
+    <url>/deeplearning/posenc/</url>
+    
+    <content type="html"><![CDATA[<h1 id="绝对位置编码"><a href="#绝对位置编码" class="headerlink" title="绝对位置编码"></a>绝对位置编码</h1><h1 id="相对位置编码"><a href="#相对位置编码" class="headerlink" title="相对位置编码"></a>相对位置编码</h1><h1 id="可学习位置编码"><a href="#可学习位置编码" class="headerlink" title="可学习位置编码"></a>可学习位置编码</h1><h1 id="旋转位置编码-RoPE"><a href="#旋转位置编码-RoPE" class="headerlink" title="旋转位置编码(RoPE)"></a>旋转位置编码(RoPE)</h1>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法杂记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>深度学习</tag>
+      
+      <tag>算法</tag>
+      
+      <tag>基础</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>DeepSeek-R1 部署微信机器人</title>
     <link href="/project/chatbot/"/>
     <url>/project/chatbot/</url>
@@ -132,11 +132,11 @@
     
     <tags>
       
-      <tag>大模型</tag>
-      
       <tag>NLP</tag>
       
       <tag>LLM</tag>
+      
+      <tag>大模型</tag>
       
       <tag>项目实战</tag>
       
@@ -163,11 +163,11 @@
     
     <tags>
       
-      <tag>大模型</tag>
-      
       <tag>NLP</tag>
       
       <tag>LLM</tag>
+      
+      <tag>大模型</tag>
       
       <tag>论文</tag>
       
@@ -319,11 +319,69 @@
   
   
   <entry>
+    <title>IntenVL 系列</title>
+    <link href="/papernotes/internvl/"/>
+    <url>/papernotes/internvl/</url>
+    
+    <content type="html"><![CDATA[<h1 id="InternVL"><a href="#InternVL" class="headerlink" title="InternVL"></a>InternVL</h1><p><strong>项目地址:</strong> <a href="https://github.com/haotian-liu/LLaVA">https://github.com/haotian-liu/LLaVA</a><br><strong>论文:</strong> <a href="https://arxiv.org/abs/2312.14238">InternVL Technical Report</a></p><h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>当前多模态大模型都是 Image Encoder + glue layer + LLM，但 Image Encoder + glue layer 的参数量远小于 LLM，导致图文信息没有得到好的融合。InternVL 通过缩放 Image Encoder + glue layer 到 LLM 的参数规模，在视觉分类、语义分割、图文检索、视频检索、视频问答、图文问答等一系列任务取得更好的结果，开放榜单超过 GPT4V取得 sota。</p><h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><ul><li>视觉编码器：InternViT-6B</li><li>中间件(模态对齐层)：QLLaMA（8B，由多语言 LLaMA-7B 初始化 + 1B 可学习 query）</li><li>LLM 模块：Vicuna-13B</li></ul><p><img src="/papernotes/internvl/internvl.png" title="InternVL 架构"></p><h2 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h2><p><img src="/papernotes/internvl/strategy.png" title="InternVL 训练策略"></p><p>模型整体架构为加强版的 BLIP2 模型，总共分为三阶段训练：</p><ul><li><strong>图文对比学习</strong>：从 60 亿开源图文对中清洗出 49.8 亿进行对比学习，两种形式，分别计算（InternVL Attention pooling 的向量和 EOS token embedding 对应投影后的cosine）、（query Attention pooling 的向量和 EOS token embedding 对应的投影后的 cosine），投影后 embedding 维度为 768</li><li><strong>图文生成训练</strong>：进行 BLIP2 的 ITC、ITM、ITG 图文对齐训练，10 亿图文对，冻结上一步的 InternViT-6B和 LLaMA-7B，训练可学习的 query</li><li><strong>监督微调</strong>：4M 数据，包含图文标题生成 caption、图文 OCR、视觉问答 VQA进行微调。</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>论文笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>大模型</tag>
+      
+      <tag>多模态</tag>
+      
+      <tag>论文</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>LLaVA 系列</title>
+    <link href="/papernotes/llava/"/>
+    <url>/papernotes/llava/</url>
+    
+    <content type="html"><![CDATA[<h1 id="LLaVA-Visual-Instruction-Tuning"><a href="#LLaVA-Visual-Instruction-Tuning" class="headerlink" title="LLaVA: Visual Instruction Tuning"></a>LLaVA: Visual Instruction Tuning</h1><p><strong>项目地址:</strong> <a href="https://github.com/haotian-liu/LLaVA">https://github.com/haotian-liu/LLaVA</a><br><strong>论文:</strong> <a href="https://arxiv.org/abs/2304.08485">LLaVA Technical Report</a></p><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>LLaVA模型的架构，是将一个预训练的视觉编码器（CLIP ViT-L/14）与一个大规模语言模型（Vicuna）连接在一起。<br>这两个模型通过一个简单的映射矩阵连接，这个矩阵负责将视觉和语言特征对齐或转换，以便在一个统一的空间内对它们进行操作。<br>在多模态指令跟随数据集上，LLaVA表现出色，跟GPT-4相比，分数达到了85.1%。在Science QA上，LLaVA的准确率刷新了纪录，达到92.53%。</p><p><strong>核心思想</strong>：LLaVA 提出了视觉指令微调数据集的三种构造方式和两阶段图文训练。</p><h2 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h2><p><img src="/papernotes/llava/llava.png" title="LLaVA 架构"></p><ul><li>图像编码器：采用 CLIP 中的预训练的 VIT-L/14</li><li>使用单层线性层实现图文 embedding 对齐</li><li>LLM 部分采用 Vicuna</li></ul><h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p><img src="/papernotes/llava/caption.png" title="GPT4 生成数据"></p><p>当前没有视觉-语言指令数据集，借助 GPT4 首先将图片翻译成单一目标的 caption 和其位置为 box。全部图片转为文字 token 后+prompt 输入到 GPT4 得到带指令的图文对，共三种类型：</p><ul><li>Conversation：简短多轮对话</li><li>Detailed description：单次详细问答</li><li>Complex reasoning：复杂语义推理</li></ul><h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>多轮对话训练，生成多轮对话问答数据，构造 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>X</mi><mrow><mi>I</mi><mi>n</mi><mi>s</mi><mi>t</mi><mi>r</mi><mi>u</mi><mi>c</mi><mi>t</mi></mrow><mi>t</mi></msubsup><mo>=</mo><mo stretchy="false">(</mo><msubsup><mi>X</mi><mi>q</mi><mn>1</mn></msubsup><mo separator="true">,</mo><msubsup><mi>X</mi><mi>a</mi><mn>1</mn></msubsup><mo separator="true">,</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo separator="true">,</mo><msubsup><mi>X</mi><mi>q</mi><mi>t</mi></msubsup><mo separator="true">,</mo><msubsup><mi>X</mi><mi>a</mi><mi>t</mi></msubsup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">X^t_{Instruct}=(X^1_q,X^1_a,...,X^t_q,X^t_a)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0689em;vertical-align:-0.2753em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7936em;"><span style="top:-2.4247em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">I</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">s</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight">t</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2753em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1972em;vertical-align:-0.3831em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-2.453em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3831em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-2.453em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">...</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7936em;"><span style="top:-2.453em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3831em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7936em;"><span style="top:-2.453em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，代表 t 轮对话数据。在第一轮，图像输入和问题输入的顺序随机打乱，后续直接添加第 t 轮的问题即可：</p><p><img src="/papernotes/llava/t_qa.png" title="t 轮对话数据"></p><h3 id="两阶段训练"><a href="#两阶段训练" class="headerlink" title="两阶段训练"></a>两阶段训练</h3><ul><li><strong>Stage-1 预训练特征对齐</strong>：冻结视觉编码器和 LLM 模块，仅训练投影层 W，目的是将预训练的 ViT 和 LLM 的 embedding 进行对齐。</li><li><strong>Stage-2 端到端微调</strong>：冻结视觉编码器，训练投影层 W 和 LLM 模块，主要从科学问答和多模态聊天机器人两个场景进行训练。</li></ul><h1 id="LLaVA1-5-Improve-Baselines-with-Visual-Instruction-Tuning"><a href="#LLaVA1-5-Improve-Baselines-with-Visual-Instruction-Tuning" class="headerlink" title="LLaVA1.5: Improve Baselines with Visual Instruction Tuning"></a>LLaVA1.5: Improve Baselines with Visual Instruction Tuning</h1><p><strong>项目地址:</strong> <a href="https://github.com/haotian-liu/LLaVA">https://github.com/haotian-liu/LLaVA</a><br><strong>论文:</strong> <a href="https://arxiv.org/abs/2310.03744">LLaVA1.5 Technical Report</a></p><h2 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h2><p><strong>核心改进</strong>：通过更改 LLaVA 结构，构建新数据，重构 prompt 格式来实现模型能力增强（8 张 A100 训练一天）。</p><p><img src="/papernotes/llava/llava1_5.png" title="LLaVA1.5 架构"></p><h2 id="模型结构-1"><a href="#模型结构-1" class="headerlink" title="模型结构"></a>模型结构</h2><ul><li>模态对齐层由单层 MLP 改为双层， 实验发现使用2层MLP改善视觉语言连接器的表示能力可以提高LLAVA的多模态功能</li><li>ClIP-Large 图像分辨率 336*336</li><li>Vicuna v1.5 13B（原来 7B），理解更好</li></ul><h2 id="数据-1"><a href="#数据-1" class="headerlink" title="数据"></a>数据</h2><ul><li>添加额外的面向学术任务问答数据集，OpenKonwledge VQA，region-level VQA，OCR VQA</li><li>使用 ShareGPT 的数据进行指令微调，说明文本复杂指令能提升多模态理解</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>论文笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>大模型</tag>
+      
+      <tag>多模态</tag>
+      
+      <tag>论文</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Qwen 系列</title>
     <link href="/papernotes/qwen/"/>
     <url>/papernotes/qwen/</url>
     
-    <content type="html"><![CDATA[<h1 id="Qwen"><a href="#Qwen" class="headerlink" title="Qwen"></a>Qwen</h1><h1 id="Qwen-2"><a href="#Qwen-2" class="headerlink" title="Qwen 2"></a>Qwen 2</h1><h1 id="Qwen-2-5"><a href="#Qwen-2-5" class="headerlink" title="Qwen 2.5"></a>Qwen 2.5</h1><h1 id="Qwen-VL"><a href="#Qwen-VL" class="headerlink" title="Qwen-VL"></a>Qwen-VL</h1><p><strong>项目地址：</strong> <a href="https://github.com/QwenLM/Qwen-VL">https://github.com/QwenLM/Qwen-VL</a><br><strong>论文：</strong> <a href="https://arxiv.org/abs/2308.12966">Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond</a></p><h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><h3 id="大型语言模型-Large-Language-Model"><a href="#大型语言模型-Large-Language-Model" class="headerlink" title="大型语言模型(Large Language Model)"></a>大型语言模型(Large Language Model)</h3><ul><li><strong>作用：</strong> 作为模型的基础组件，负责文本生成和理解</li><li><strong>初始化：</strong> 使用预训练的 Qwen-7B 模型权重</li></ul><h3 id="视觉编码器-Visual-Encoder"><a href="#视觉编码器-Visual-Encoder" class="headerlink" title="视觉编码器(Visual Encoder)"></a>视觉编码器(Visual Encoder)</h3><ul><li><strong>作用：</strong> 处理输入图像并生成图像特征</li><li><strong>架构：</strong> 基于 Vision Transformer (ViT)，使用 OpenCLIP ViT-bigG 的预训练权重</li><li><strong>输入处理：</strong> 将图像调整为 448x448 分辨率，分割为 14x14 的图块进行处理</li></ul><h3 id="位置感知的视觉-语言适配器-Position-aware-Vision-Language-Adapter"><a href="#位置感知的视觉-语言适配器-Position-aware-Vision-Language-Adapter" class="headerlink" title="位置感知的视觉 -语言适配器(Position-aware Vision-Language Adapter)"></a>位置感知的视觉 -语言适配器(Position-aware Vision-Language Adapter)</h3><ul><li><strong>作用：</strong> 压缩图像特征序列，解决长序列带来的效率问题</li><li><strong>结构：</strong> 单层交叉注意力模块，随机初始化<ul><li>使用一组可训练的向量作为 query， vision encoder 的图像特征作为 key</li><li>将图像特征序列压缩为固定长度 256</li></ul></li><li><strong>位置编码：</strong> 引入 2D 绝对位置编码，保留图像细节的位置信息</li></ul><h2 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h2><p><img src="/papernotes/qwen/qwen.png" title="Qwen-VL 三阶段训练过程"></p><h3 id="Stage-1-预训练"><a href="#Stage-1-预训练" class="headerlink" title="Stage 1: 预训练"></a>Stage 1: 预训练</h3><ul><li><strong>目标：</strong> 对齐视觉模块和语言模型的特征</li><li><strong>数据：</strong> 使用大规模图文对数据集（约1.4B 图文对）</li><li><strong>训练目标：</strong> 最小化文本 token 的交叉熵损失</li><li><strong>优化器：</strong> AdamW (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>1</mn></msub><mo>=</mo><mn>0.9</mn></mrow><annotation encoding="application/x-tex">\beta_1=0.9</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0528em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.9</span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>2</mn></msub><mo>=</mo><mn>0.98</mn></mrow><annotation encoding="application/x-tex">\beta_2=0.98</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0528em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.98</span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi><mo>=</mo><mn>1</mn><mi>e</mi><mo>−</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">\epsilon=1e-6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mord mathnormal">e</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span>)</li><li><strong>学习率调度：</strong> 余弦学习率调度，最大学习率 2e-4，最小学习率 1e-6， linear warmup 500 步</li><li><strong>训练规模：</strong> 50.000 步，消耗约 1.5B 图文样本和 500B 图文 token</li></ul><p><img src="/papernotes/qwen/dataclean.png" title="数据清洗残留率"></p><h3 id="Stage-2-多任务预训练"><a href="#Stage-2-多任务预训练" class="headerlink" title="Stage 2: 多任务预训练"></a>Stage 2: 多任务预训练</h3><ul><li><strong>目标：</strong> 提升模型在多任务上的表现</li><li><strong>数据：</strong> 高质量、细粒度的视觉-语言标注数据，交错图像-文本数据</li><li><strong>任务：</strong> 并行训练以下任务： <ul><li>图像描述 (Captioning)</li><li>视觉问答 (VQA) </li><li>定位任务 (Grounding)</li><li>参考定位和定位描述 (Ref Grounding &amp; Grounded Cap)</li><li>光学字符识别 (OCR)</li><li>文本生成 (Text Generation)</li></ul></li><li><strong>训练方式：</strong> 全参数训练，输入分辨率提升至 448x448。</li></ul><h3 id="Stage-3-监督微调-SFT"><a href="#Stage-3-监督微调-SFT" class="headerlink" title="Stage 3: 监督微调(SFT)"></a>Stage 3: 监督微调(SFT)</h3><ul><li><strong>目标：</strong> 增强模型的交互和对话能力</li><li><strong>数据：</strong> 通过大模型 Self-Instruction 生成的多模态指导数据，涵盖单图和多图对话</li><li><strong>训练方式：</strong><ul><li>冻结 Vision Encoder，仅优化语言模型和 adapter 模块</li><li>使用 ChatML 格式构建对话数据，添加图像标识 (如 “Picture id：”) 以支持多图输入</li></ul></li><li><strong>训练参数：</strong><ul><li>全局批次大小：128</li><li>学习率调度：最大学习率 1e-5，最小学习率 1e-6， linear warmup 3000 步。</li></ul></li></ul><h1 id="Qwen-2VL"><a href="#Qwen-2VL" class="headerlink" title="Qwen-2VL"></a>Qwen-2VL</h1><p><strong>项目地址：</strong> <a href="https://github.com/QwenLM/Qwen2-VL">https://github.com/QwenLM/Qwen2-VL</a><br><strong>论文：</strong> <a href="https://arxiv.org/pdf/2409.12191">Qwen2-VL: Enhancing Vision-Language Model’s Perception of the World at Any Resolution</a></p><h2 id="提出背景"><a href="#提出背景" class="headerlink" title="提出背景"></a>提出背景</h2><h3 id="现有问题"><a href="#现有问题" class="headerlink" title="现有问题"></a>现有问题</h3><ul><li>当前的大型视觉语言模型（LVLMs）通常受限于固定图像输入尺寸，例如将图像编码为固定分辨率 （如 224x224），<strong>导致高分辨率图像中的细节信息损失</strong></li><li>大多数LVLM依赖于静态的、冻结的<strong>CLIP风格视觉编码器，限制了复杂推理任务中的表现</strong></li></ul><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul><li><strong>引入动态分辨率训练</strong>，使用二维旋转位置嵌入(RoPE)增强模型对不同分辨率的适应性</li><li>开发<strong>多模态旋转位置嵌入</strong> (M-RoPE)，通过独立的组件表示时间和空间信息，提升对动态内容（如视频）的理解能力</li></ul><h2 id="模型架构-1"><a href="#模型架构-1" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/papernotes/qwen/qwen2vl.png" title="Qwen-2VL 模型架构"></p><ul><li><strong>框架基础：</strong> 保留了 Qwen-VL 的框架，集成了视觉编码器和语言模型</li><li><strong>视觉编码器：</strong> 采用 675M 参数的 ViT，支持图像和视频输入</li><li><strong>语言模型：</strong> 选择了更强大的 Qwen2 系列语言模型</li></ul><h2 id="关键改进-相比Qwen-VL"><a href="#关键改进-相比Qwen-VL" class="headerlink" title="关键改进(相比Qwen-VL)"></a>关键改进(相比Qwen-VL)</h2><ol><li><strong>Naive动态分辨率：</strong><ul><li>支持处理任意分辨率的图像，动态转换为可变数量的视觉token</li><li>引入 2D-RoPE 捕获图像的二维位置信息</li><li>在推理阶段，通过控制打包长度限制 GPU 内存使用</li><li>使用 MLP 层将相邻的 2x2 token 压缩为一个token，并在开头和结尾添加特殊token<br>(<code>&lt;|vision_ start|&gt;</code> 和 <code>&lt;|vision_end|&gt;</code> ）</li></ul></li></ol><ol><li><strong>多模态旋转位置嵌入 (M-RoPE)：</strong><ul><li>将旋转嵌入分解为三个组件：时间、高度和宽度</li><li>对于文本输入，组件使用相同的位置 ID；对于图像和视频，分别分配不同的 ID</li><li>支持多模态输入的位置信息建模，减少位置ID值，提升推理效率</li></ul></li></ol><h2 id="训练方法"><a href="#训练方法" class="headerlink" title="训练方法"></a>训练方法</h2><ul><li>采用<strong>混合训练方案</strong>，结合图像和视频数据</li><li>以每秒两帧的速率采样视频，结合3D卷积处理视频输入</li><li>动态调整视频帧分辨率，将每个视频的token总数限制为 16384，平衡计算需求与训练效率</li></ul><h1 id="Qwen-2-5VL"><a href="#Qwen-2-5VL" class="headerlink" title="Qwen-2.5VL"></a>Qwen-2.5VL</h1><p><strong>论文：</strong> <a href="https://arxiv.org/pdf/2502.13923">Qwen2.5- VL Technical Report</a><br><strong>模型：</strong> <a href="https://huggingface.co/Qwen">https://huggingface.co/Qwen</a><br><strong>代码：</strong> <a href="https://github.com/QwenLM/Qwen2.5-VL">https://github.com/QwenLM/Qwen2.5-VL</a></p><h2 id="模型架构-2"><a href="#模型架构-2" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/papernotes/qwen/qwen25vl.png" title="Qwen-2.5VL 架构"></p><ul><li><strong>模态对齐方法：</strong> ViT 之后采用双层 MLP 实现模态对齐，Qwen-2VL 仅使用单层</li><li><strong>视觉编码器：</strong> <ul><li><strong>Qwen-2.5VL：</strong> ViT 中改用 <strong>Window-Attention，RMSNorm，SwiGLU</strong>，而 </li><li><strong>Qwen-2VL：</strong> LayerNorm，GELU</li></ul></li><li><strong>位置嵌入：</strong> 将 MRoPE扩展到 3D 情况，更好地处理视频信息<ul><li><strong>文本输入：</strong> 三个组件使用相同的位置 功能等同于传统的 1D RoPE</li><li><strong>图像输入：</strong> 时间 ID 保持不变，高度和宽度组件根据 token 在图像中的空间位置分配唯一 ID</li><li><strong>视频输入：</strong> 视频被视为帧序列，时间 ID逐帧递增，高度和宽度组件遵循与图像相同的分配模式</li></ul></li></ul><h2 id="训练方法-1"><a href="#训练方法-1" class="headerlink" title="训练方法"></a>训练方法</h2><h2 id="动态分辨率训练"><a href="#动态分辨率训练" class="headerlink" title="动态分辨率训练"></a>动态分辨率训练</h2><p><strong>动态分辨率：</strong></p><ul><li>支持处理任意分辨率的图像，动态转换为可变数量的视觉 token</li><li>引I入 2D-RoPE 捕获图像的二维位置信息</li><li>在推理阶段，通过控制打包长度限制 GPU 内存使用</li><li>使用 MLP 层将相邻的 2x2 token 压缩为一个 token，并在开头和结尾添加特殊 token (<code>&lt;|vision_start|&gt;</code> 和 <code>&lt;|vision_end|&gt;</code>)</li></ul><p><strong>动态顿率训练：</strong> </p><ul><li>通过动态 FPS 采样，将动态分辨率扩展到时间维度。 </li><li>更新了时间维度上的 MRoPE，增加 ID 和绝对时间对齐，使模型能够学习时间顺序和速度，精确定位特定时刻</li></ul><p><strong>随机采样：</strong> 训练过程中，图像根据其原始宽高比随机采样，使模型能够有效泛化到不同分辨率的输入</p><ul><li><strong>优势：</strong><ul><li>提升模型的适应性</li><li>确保在不同尺寸视觉数据上的稳定和高效训练。</li></ul></li></ul><h2 id="长文本预训练"><a href="#长文本预训练" class="headerlink" title="长文本预训练"></a>长文本预训练</h2><p>Qwen-2.5VL 整体流程包含：视觉预训练、多任务预训练、长文本预训练，比 Qwen-2VL 多了<strong>长文本预训练</strong></p>]]></content>
+    <content type="html"><![CDATA[<h1 id="Qwen"><a href="#Qwen" class="headerlink" title="Qwen"></a>Qwen</h1><h1 id="Qwen-2"><a href="#Qwen-2" class="headerlink" title="Qwen 2"></a>Qwen 2</h1><h1 id="Qwen-2-5"><a href="#Qwen-2-5" class="headerlink" title="Qwen 2.5"></a>Qwen 2.5</h1><h1 id="Qwen-3"><a href="#Qwen-3" class="headerlink" title="Qwen 3"></a>Qwen 3</h1><p><strong>项目地址:</strong> <a href="https://github.com/QwenLM/Qwen3">https://github.com/QwenLM/Qwen3</a><br><strong>论文:</strong> <a href="https://arxiv.org/abs/2505.09388">Qwen3 Technical Report</a></p><h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><ul><li>常规结构：GQA、RoPE、SwiGLU、RMSNorm，BBPE 分词法</li><li>128 专家层，每个 token 激活 8 个专家，包含共享专家层(参考DeepSeek)</li><li>引入全局 Batch 平衡损失</li></ul><h2 id="数据处理步骤"><a href="#数据处理步骤" class="headerlink" title="数据处理步骤"></a>数据处理步骤</h2><ol><li>Qwen2.5-VL 处理 PDF 文件，形成文字数据集</li><li>Qwen2.5 对得到的文字数据集进行进一步处理，增强数据形式</li><li>Qwen2.5、Qwen2.5-Math、Qwen2.5-Coder 分别进行领域内数据格式处理，如 Q&amp;A 对、科普文本块、代码片段等</li><li>最后引入多语言版本，提高交叉语言能力(29➡️119)</li></ol><h2 id="预训练阶段"><a href="#预训练阶段" class="headerlink" title="预训练阶段"></a>预训练阶段</h2><ol><li><strong>General Stage(S1):</strong> Sequence 长度 4096，语言种类 119，数据量 30 T，<strong>学习通用知识</strong></li><li><strong>Reasoning Stage(S2):</strong> <strong>提高模型理解能力</strong>，提高科学类数据(STEM)的比例，Sequence 长度 4096，数据量 5T，采用学习率衰减加速学习</li><li><strong>Long Context Stage:</strong> <strong>提高模型长文本能力</strong>，Sequence 长度增加到 32768，长文本(16384-32768)占 75%，短文本(4096-16384)占 25%；用 ABF 将 RoPE 从 1w 长度外推至 100w；推理阶段采用 YARN 和 Dual Chunk Attention(DCA) 实现 Sequence len 的 4-fold 提升</li></ol><hr><h3 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h3><p><strong>评估任务：</strong> 通用任务、数学&amp;科学任务、代码任务、多语言任务</p><ol><li>综合表现超越现有的 SOTA 模型</li><li>Qwen3-MoE 相比于 Qwen3-Dense 仅有 <strong>1/5</strong> 的激活参数</li><li>Qwen3-MoE 相比于 Qwen2.5-MoE 仅有 <strong>1/2</strong> 的激活参数</li><li>Qwen3-MoE 相比于 Qwen2.5-Dense 仅有 <strong>1/10</strong> 的激活参数，并且效果不输于后者</li></ol><hr><h2 id="后训练阶段"><a href="#后训练阶段" class="headerlink" title="后训练阶段"></a>后训练阶段</h2><p><img src="/papernotes/qwen/qwen3cpt.png" title="Qwen3 后训练流程"></p><h3 id="Stage1-长-CoT-冷启动"><a href="#Stage1-长-CoT-冷启动" class="headerlink" title="Stage1-长 CoT 冷启动:"></a>Stage1-长 CoT 冷启动:</h3><ul><li>包括查询过滤(query filtering)和回复过滤(response filtering)。</li><li><strong>查询过滤</strong>：使用 Qwen2.5-72B-Instruct 移除难以验证的问题，以及 不需要思维链直接回答的问题</li><li><strong>回答过滤</strong>：使用 QwQ-32B 对每个问题生成 N 个回答，对于具有 <strong>正Pass@N</strong> 的查询，用更加严格的筛选条件来删除回复。<blockquote><p>For queries with positive Pass@N, further stringent filtering criteria are applied to remove responses that (1) yield incorrect final answers, (2) contain substantial repetition, (3) clearly indicate guesswork without adequate reasoning, (4) exhibit inconsistencies between the thinking and summary contents, (5) involve inappropriate language mixing or stylistic shifts, or (6) are suspected of being overly similar to potential validation set items. Subsequently, a carefully selected subset of the refined dataset is used for the initial cold-start training of the reasoning patterns.</p></blockquote></li></ul><p><strong>此阶段的目标是在模型中灌输基础推理模式，但不要过分强调即时推理性能。这种方法确保模型的潜力不受限制，从而在随后的强化学习(RL)阶段实现更大的灵活性和改进。</strong></p><h3 id="Stage2-理解强化学习"><a href="#Stage2-理解强化学习" class="headerlink" title="Stage2-理解强化学习:"></a>Stage2-理解强化学习:</h3><ul><li>收集 3995 个符合规则的查询，进行 GRPO 强化学习</li><li>使用大 batch size 和对每个查询进行大数量的回答有利于训的稳定<blockquote><p><strong>Query-verifier 对的挑选规则：</strong></p><ol><li>在冷启动阶段未使用它们</li><li>对于冷启动模型来说，它们是可以学习的</li><li>他们尽可能具有挑战性</li><li>它们涵盖了广泛的子域</li></ol></blockquote></li></ul><h3 id="Stage3-思考模式融合"><a href="#Stage3-思考模式融合" class="headerlink" title="Stage3-思考模式融合:"></a>Stage3-思考模式融合:</h3><p>这一步的目的是将“无思考”模式集成到前面的思考模型中，通过对前面的强化学习模型进行监督微调(SFT)来实现，并且设计一个聊天模板来融合两种模式。</p><p><img src="/papernotes/qwen/qwen3sftdata.png" title="SFT 数据构造"></p><ul><li><strong>SFT 数据:</strong> 为了确保 Stage2 模型的性能不会受到 SFT 的损害，使用 Stage2 模型本身在 Stage1 查询上进行拒绝采样生成“思考”数据。</li><li><strong>聊天模板设计:</strong> 为了更好地融合思考和非思考模式，分别在用户查询或系统信息中设计 <code>\think</code>和<code>\no_think</code>标志来进行模式切换。</li><li><strong>思维预算:</strong> 当模型的思考长度达到用户定义的阈值时，会手动停止思维过程来提供最终解决方案。<font color="blue">“考虑用户有限的时间，我必须直接基于思维来提供解决方案。”</font> 插入此指令后，该模型将根据其累积的推理产生最终响应。<font color="red">这种能力没有明确训练，而是由于应用思维模式融合而自然出现的。</font></li></ul><h3 id="Stage4-通用强化学习"><a href="#Stage4-通用强化学习" class="headerlink" title="Stage4-通用强化学习:"></a>Stage4-通用强化学习:</h3><p>这一阶段的目的是增强模型的核心功能，涵盖了20多个不同的任务，每个任务都具有定制的评分标准。这些任务在以下核心功能中专门针对增强功能：<strong>指令遵循、格式遵循、偏好对齐、代理能力、专业场景能力</strong></p><blockquote><ul><li><strong>偏好对齐</strong>：对于开放式查询，偏好一致性重点是改善模型的乐趣，参与度和风格，最终提供更自然，更令人满意的用户体验</li><li><strong>代理能力</strong>：训练模型通过指定接口正确调用工具。在RL推出期间，允许模型使用真实的环境执行反馈执行完整的多转交互周期，从而改善了长距离决策任务的性能和稳定性。</li><li><strong>专业场景的能力</strong>：在更专业的方案中，设计针对特定上下文的任务。例如，在RAG任务中，合并了奖励信号，以指导模型产生准确且上下文适当的响应，从而最大程度地减少了幻觉的风险。</li></ul></blockquote><p>为了提供上述任务的反馈，利用了三种不同类型的奖励：</p><ul><li><strong>基于规则的奖励:</strong> 对于诸如教学之类的一般任务和格式服从性等一般任务，精心设计的基于规则的奖励可以以高精度评估模型输出的正确性，从而防止奖励黑客攻击。</li><li><strong>带有参考答案的基于模型的奖励:</strong> 为每个查询提供一个参考答案，并通过 Qwen2.5-72B-Instruct 根据此参考为模型的响应评分。此方法允许在不需要严格格式的情况下更灵活地处理各种任务，避免使用纯粹基于规则的奖励发生的虚假负面因素。</li><li><strong>无参考答案的基于模型的奖励:</strong> 利用人类偏好数据，训练一个奖励模型，为模型响应分配标量分数。这种方法不依赖于参考答案，可以处理更广泛的查询，同时有效地提高模型的参与度和实用性。</li></ul><h3 id="Stahe5-蒸馏小模型"><a href="#Stahe5-蒸馏小模型" class="headerlink" title="Stahe5-蒸馏小模型:"></a>Stahe5-蒸馏小模型:</h3><ul><li><p><strong>线下策略蒸馏:</strong> 初始阶段，利用教师模型的<code>/think</code>和<code>/no_think</code>模式来进行学生模型的蒸馏，给学生模型基本的模式转换能力。</p></li><li><p><strong>线上策略蒸馏:</strong> 对学生模型进行微调，对 prompt 进行采样，并且将输出与其教师模型的输出进行对齐，最小化 KL 散度。</p></li></ul><h2 id="对比-Qwen2-5"><a href="#对比-Qwen2-5" class="headerlink" title="对比 Qwen2.5"></a>对比 Qwen2.5</h2><ol><li>移除 Qwen2.5 中的 QK-bias，加入 QK-Norm 来稳定训练</li><li>MoE 模式</li></ol><h1 id="Qwen-VL"><a href="#Qwen-VL" class="headerlink" title="Qwen-VL"></a>Qwen-VL</h1><p><strong>项目地址：</strong> <a href="https://github.com/QwenLM/Qwen-VL">https://github.com/QwenLM/Qwen-VL</a><br><strong>论文：</strong> <a href="https://arxiv.org/abs/2308.12966">Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond</a></p><h2 id="模型架构-1"><a href="#模型架构-1" class="headerlink" title="模型架构"></a>模型架构</h2><h3 id="大型语言模型-Large-Language-Model"><a href="#大型语言模型-Large-Language-Model" class="headerlink" title="大型语言模型(Large Language Model)"></a>大型语言模型(Large Language Model)</h3><ul><li><strong>作用：</strong> 作为模型的基础组件，负责文本生成和理解</li><li><strong>初始化：</strong> 使用预训练的 Qwen-7B 模型权重</li></ul><h3 id="视觉编码器-Visual-Encoder"><a href="#视觉编码器-Visual-Encoder" class="headerlink" title="视觉编码器(Visual Encoder)"></a>视觉编码器(Visual Encoder)</h3><ul><li><strong>作用：</strong> 处理输入图像并生成图像特征</li><li><strong>架构：</strong> 基于 Vision Transformer (ViT)，使用 OpenCLIP ViT-bigG 的预训练权重</li><li><strong>输入处理：</strong> 将图像调整为 448x448 分辨率，分割为 14x14 的图块进行处理</li></ul><h3 id="位置感知的视觉-语言适配器-Position-aware-Vision-Language-Adapter"><a href="#位置感知的视觉-语言适配器-Position-aware-Vision-Language-Adapter" class="headerlink" title="位置感知的视觉 -语言适配器(Position-aware Vision-Language Adapter)"></a>位置感知的视觉 -语言适配器(Position-aware Vision-Language Adapter)</h3><ul><li><strong>作用：</strong> 压缩图像特征序列，解决长序列带来的效率问题</li><li><strong>结构：</strong> 单层交叉注意力模块，随机初始化<ul><li>使用一组可训练的向量作为 query， vision encoder 的图像特征作为 key</li><li>将图像特征序列压缩为固定长度 256</li></ul></li><li><strong>位置编码：</strong> 引入 2D 绝对位置编码，保留图像细节的位置信息</li></ul><h2 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h2><p><img src="/papernotes/qwen/qwen.png" title="Qwen-VL 三阶段训练过程"></p><h3 id="Stage-1-预训练"><a href="#Stage-1-预训练" class="headerlink" title="Stage 1: 预训练"></a>Stage 1: 预训练</h3><ul><li><strong>目标：</strong> 对齐视觉模块和语言模型的特征</li><li><strong>数据：</strong> 使用大规模图文对数据集（约1.4B 图文对）</li><li><strong>训练目标：</strong> 最小化文本 token 的交叉熵损失</li><li><strong>优化器：</strong> AdamW (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>1</mn></msub><mo>=</mo><mn>0.9</mn></mrow><annotation encoding="application/x-tex">\beta_1=0.9</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0528em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.9</span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>2</mn></msub><mo>=</mo><mn>0.98</mn></mrow><annotation encoding="application/x-tex">\beta_2=0.98</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0528em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.98</span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi><mo>=</mo><mn>1</mn><mi>e</mi><mo>−</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">\epsilon=1e-6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mord mathnormal">e</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span>)</li><li><strong>学习率调度：</strong> 余弦学习率调度，最大学习率 2e-4，最小学习率 1e-6， linear warmup 500 步</li><li><strong>训练规模：</strong> 50.000 步，消耗约 1.5B 图文样本和 500B 图文 token</li></ul><p><img src="/papernotes/qwen/dataclean.png" title="数据清洗残留率"></p><h3 id="Stage-2-多任务预训练"><a href="#Stage-2-多任务预训练" class="headerlink" title="Stage 2: 多任务预训练"></a>Stage 2: 多任务预训练</h3><ul><li><strong>目标：</strong> 提升模型在多任务上的表现</li><li><strong>数据：</strong> 高质量、细粒度的视觉-语言标注数据，交错图像-文本数据</li><li><strong>任务：</strong> 并行训练以下任务： <ul><li>图像描述 (Captioning)</li><li>视觉问答 (VQA) </li><li>定位任务 (Grounding)</li><li>参考定位和定位描述 (Ref Grounding &amp; Grounded Cap)</li><li>光学字符识别 (OCR)</li><li>文本生成 (Text Generation)</li></ul></li><li><strong>训练方式：</strong> 全参数训练，输入分辨率提升至 448x448。</li></ul><h3 id="Stage-3-监督微调-SFT"><a href="#Stage-3-监督微调-SFT" class="headerlink" title="Stage 3: 监督微调(SFT)"></a>Stage 3: 监督微调(SFT)</h3><ul><li><strong>目标：</strong> 增强模型的交互和对话能力</li><li><strong>数据：</strong> 通过大模型 Self-Instruction 生成的多模态指导数据，涵盖单图和多图对话</li><li><strong>训练方式：</strong><ul><li>冻结 Vision Encoder，仅优化语言模型和 adapter 模块</li><li>使用 ChatML 格式构建对话数据，添加图像标识 (如 “Picture id：”) 以支持多图输入</li></ul></li><li><strong>训练参数：</strong><ul><li>全局批次大小：128</li><li>学习率调度：最大学习率 1e-5，最小学习率 1e-6， linear warmup 3000 步。</li></ul></li></ul><h1 id="Qwen-2VL"><a href="#Qwen-2VL" class="headerlink" title="Qwen-2VL"></a>Qwen-2VL</h1><p><strong>项目地址：</strong> <a href="https://github.com/QwenLM/Qwen2-VL">https://github.com/QwenLM/Qwen2-VL</a><br><strong>论文：</strong> <a href="https://arxiv.org/pdf/2409.12191">Qwen2-VL: Enhancing Vision-Language Model’s Perception of the World at Any Resolution</a></p><h2 id="提出背景"><a href="#提出背景" class="headerlink" title="提出背景"></a>提出背景</h2><h3 id="现有问题"><a href="#现有问题" class="headerlink" title="现有问题"></a>现有问题</h3><ul><li>当前的大型视觉语言模型（LVLMs）通常受限于固定图像输入尺寸，例如将图像编码为固定分辨率 （如 224x224），<strong>导致高分辨率图像中的细节信息损失</strong></li><li>大多数LVLM依赖于静态的、冻结的<strong>CLIP风格视觉编码器，限制了复杂推理任务中的表现</strong></li></ul><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul><li><strong>引入动态分辨率训练</strong>，使用二维旋转位置嵌入(RoPE)增强模型对不同分辨率的适应性</li><li>开发<strong>多模态旋转位置嵌入</strong> (M-RoPE)，通过独立的组件表示时间和空间信息，提升对动态内容（如视频）的理解能力</li></ul><h2 id="模型架构-2"><a href="#模型架构-2" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/papernotes/qwen/qwen2vl.png" title="Qwen-2VL 模型架构"></p><ul><li><strong>框架基础：</strong> 保留了 Qwen-VL 的框架，集成了视觉编码器和语言模型</li><li><strong>视觉编码器：</strong> 采用 675M 参数的 ViT，支持图像和视频输入</li><li><strong>语言模型：</strong> 选择了更强大的 Qwen2 系列语言模型</li></ul><h2 id="关键改进-相比Qwen-VL"><a href="#关键改进-相比Qwen-VL" class="headerlink" title="关键改进(相比Qwen-VL)"></a>关键改进(相比Qwen-VL)</h2><ol><li><strong>Naive动态分辨率：</strong><ul><li>支持处理任意分辨率的图像，动态转换为可变数量的视觉token</li><li>引入 2D-RoPE 捕获图像的二维位置信息</li><li>在推理阶段，通过控制打包长度限制 GPU 内存使用</li><li>使用 MLP 层将相邻的 2x2 token 压缩为一个token，并在开头和结尾添加特殊token<br>(<code>&lt;|vision_ start|&gt;</code> 和 <code>&lt;|vision_end|&gt;</code> ）</li></ul></li></ol><ol><li><strong>多模态旋转位置嵌入 (M-RoPE)：</strong><ul><li>将旋转嵌入分解为三个组件：时间、高度和宽度</li><li>对于文本输入，组件使用相同的位置 ID；对于图像和视频，分别分配不同的 ID</li><li>支持多模态输入的位置信息建模，减少位置ID值，提升推理效率</li></ul></li></ol><h2 id="训练方法"><a href="#训练方法" class="headerlink" title="训练方法"></a>训练方法</h2><ul><li>采用<strong>混合训练方案</strong>，结合图像和视频数据</li><li>以每秒两帧的速率采样视频，结合3D卷积处理视频输入</li><li>动态调整视频帧分辨率，将每个视频的token总数限制为 16384，平衡计算需求与训练效率</li></ul><h1 id="Qwen-2-5VL"><a href="#Qwen-2-5VL" class="headerlink" title="Qwen-2.5VL"></a>Qwen-2.5VL</h1><p><strong>论文：</strong> <a href="https://arxiv.org/pdf/2502.13923">Qwen2.5- VL Technical Report</a><br><strong>模型：</strong> <a href="https://huggingface.co/Qwen">https://huggingface.co/Qwen</a><br><strong>代码：</strong> <a href="https://github.com/QwenLM/Qwen2.5-VL">https://github.com/QwenLM/Qwen2.5-VL</a></p><h2 id="模型架构-3"><a href="#模型架构-3" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/papernotes/qwen/qwen25vl.png" title="Qwen-2.5VL 架构"></p><ul><li><strong>模态对齐方法：</strong> ViT 之后采用双层 MLP 实现模态对齐，Qwen-2VL 仅使用单层</li><li><strong>视觉编码器：</strong> <ul><li><strong>Qwen-2.5VL：</strong> ViT 中改用 <strong>Window-Attention，RMSNorm，SwiGLU</strong>，而 </li><li><strong>Qwen-2VL：</strong> LayerNorm，GELU</li></ul></li><li><strong>位置嵌入：</strong> 将 MRoPE扩展到 3D 情况，更好地处理视频信息<ul><li><strong>文本输入：</strong> 三个组件使用相同的位置 功能等同于传统的 1D RoPE</li><li><strong>图像输入：</strong> 时间 ID 保持不变，高度和宽度组件根据 token 在图像中的空间位置分配唯一 ID</li><li><strong>视频输入：</strong> 视频被视为帧序列，时间 ID逐帧递增，高度和宽度组件遵循与图像相同的分配模式</li></ul></li></ul><h2 id="训练方法-1"><a href="#训练方法-1" class="headerlink" title="训练方法"></a>训练方法</h2><h2 id="动态分辨率训练"><a href="#动态分辨率训练" class="headerlink" title="动态分辨率训练"></a>动态分辨率训练</h2><p><strong>动态分辨率：</strong></p><ul><li>支持处理任意分辨率的图像，动态转换为可变数量的视觉 token</li><li>引I入 2D-RoPE 捕获图像的二维位置信息</li><li>在推理阶段，通过控制打包长度限制 GPU 内存使用</li><li>使用 MLP 层将相邻的 2x2 token 压缩为一个 token，并在开头和结尾添加特殊 token (<code>&lt;|vision_start|&gt;</code> 和 <code>&lt;|vision_end|&gt;</code>)</li></ul><p><strong>动态顿率训练：</strong> </p><ul><li>通过动态 FPS 采样，将动态分辨率扩展到时间维度。 </li><li>更新了时间维度上的 MRoPE，增加 ID 和绝对时间对齐，使模型能够学习时间顺序和速度，精确定位特定时刻</li></ul><p><strong>随机采样：</strong> 训练过程中，图像根据其原始宽高比随机采样，使模型能够有效泛化到不同分辨率的输入</p><ul><li><strong>优势：</strong><ul><li>提升模型的适应性</li><li>确保在不同尺寸视觉数据上的稳定和高效训练。</li></ul></li></ul><h2 id="长文本预训练"><a href="#长文本预训练" class="headerlink" title="长文本预训练"></a>长文本预训练</h2><p>Qwen-2.5VL 整体流程包含：视觉预训练、多任务预训练、长文本预训练，比 Qwen-2VL 多了<strong>长文本预训练</strong></p>]]></content>
     
     
     <categories>
@@ -393,11 +451,11 @@
     
     <tags>
       
-      <tag>大模型</tag>
-      
       <tag>NLP</tag>
       
       <tag>LLM</tag>
+      
+      <tag>大模型</tag>
       
     </tags>
     
@@ -422,11 +480,11 @@
     
     <tags>
       
-      <tag>大模型</tag>
-      
       <tag>NLP</tag>
       
       <tag>LLM</tag>
+      
+      <tag>大模型</tag>
       
     </tags>
     
@@ -451,9 +509,9 @@
     
     <tags>
       
-      <tag>算法</tag>
-      
       <tag>深度学习</tag>
+      
+      <tag>算法</tag>
       
       <tag>基础</tag>
       
@@ -480,9 +538,9 @@
     
     <tags>
       
-      <tag>算法</tag>
-      
       <tag>深度学习</tag>
+      
+      <tag>算法</tag>
       
       <tag>基础</tag>
       
