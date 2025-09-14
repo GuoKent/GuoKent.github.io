@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.jpg">
+  <link rel="icon" href="/img/logo.jpg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Kent">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="论文: https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2010.05222代码: https:&#x2F;&#x2F;github.com&#x2F;deepinsight&#x2F;insightface&#x2F;tree&#x2F;master&#x2F;recognition&#x2F;partial_fc 动机解决人脸识别中随着样本数量增大的情况下，GPU计算无法负载的情况。同时保证在低计算资源的情况下能够达到全类别分类的准确率batch size&#x3D;64，embedd">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Partial_FC">
+<meta property="og:url" content="https://guokent.github.io/papernotes/partial_fc/index.html">
+<meta property="og:site_name" content="KentGuoK">
+<meta property="og:description" content="论文: https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2010.05222代码: https:&#x2F;&#x2F;github.com&#x2F;deepinsight&#x2F;insightface&#x2F;tree&#x2F;master&#x2F;recognition&#x2F;partial_fc 动机解决人脸识别中随着样本数量增大的情况下，GPU计算无法负载的情况。同时保证在低计算资源的情况下能够达到全类别分类的准确率batch size&#x3D;64，embedd">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://guokent.github.io/papernotes/partial_fc/1.jpg">
+<meta property="og:image" content="https://guokent.github.io/papernotes/partial_fc/2.jpg">
+<meta property="og:image" content="https://guokent.github.io/papernotes/partial_fc/3.jpg">
+<meta property="og:image" content="https://guokent.github.io/papernotes/partial_fc/4.jpg">
+<meta property="og:image" content="https://guokent.github.io/papernotes/partial_fc/5.jpg">
+<meta property="article:published_time" content="2025-08-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-07T10:55:35.883Z">
+<meta property="article:author" content="Kent">
+<meta property="article:tag" content="大模型">
+<meta property="article:tag" content="多模态">
+<meta property="article:tag" content="论文">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://guokent.github.io/papernotes/partial_fc/1.jpg">
+  
+  
+  
+  <title>Partial_FC - KentGuoK</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"guokent.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha256-TThEtR+XalhWKkfF383YLOrI50NGNeIqrzS+q08afrY=" crossorigin="anonymous"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>HomePage</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Partial_FC"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-26 00:00" pubdate>
+          2025年8月26日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Partial_FC</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>论文:</strong> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2010.05222">https://arxiv.org/abs/2010.05222</a><br><strong>代码:</strong> <a target="_blank" rel="noopener" href="https://github.com/deepinsight/insightface/tree/master/recognition/partial_fc">https://github.com/deepinsight/insightface/tree/master/recognition/partial_fc</a></p>
+<h1 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h1><p>解决人脸识别中随着样本数量增大的情况下，GPU计算无法负载的情况。同时保证在低计算资源的情况下能够达到全类别分类的准确率<br>batch size=64，embedding dim=512情况下，<strong>实现8张2080ti分类1000w个类别；64个GPU分类1亿个类别</strong></p>
+<h1 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h1><p>作者发现，softmax中负类别对最终结果的影响并没那么重要，因此作者将众多类别细分为子集，采用聚类中心的方法来实现样本的分类。</p>
+<h2 id="近似策略"><a href="#近似策略" class="headerlink" title="近似策略"></a>近似策略</h2><p><img src="/papernotes/partial_fc/1.jpg" srcset="/img/loading.gif" lazyload title="损失函数"></p>
+<p>W是个d*C的矩阵，d为embedding为度，C为类别数量，N为batch size大小，fj表示全连阶层之后的激活特征</p>
+<p><img src="/papernotes/partial_fc/2.jpg" srcset="/img/loading.gif" lazyload title="损失函数"></p>
+<p>线性变换矩阵中每一列被视为一个类中心，对于样本xi，w_yi就是其类中心（第yi列）。如果想要选择一个子集来近似全类别的softmax，那么这个样本xi的正类中心w_yi必须被包括，只有这样模型的性能才能保持。<br>作者进行了两个消融实验来验证这个假设：</p>
+<ul>
+<li>第一个实验将该batch中所有将正类中心选择，然后负类进行随机采样（采样率0.1），称为正加随机负类（PPRN）</li>
+<li>第二个实验直接从所有类中心进行随机选择，采样率0.5<br>训练过程中将xi和w_yi的平均余弦定义为：</li>
+</ul>
+<p><img src="/papernotes/partial_fc/3.jpg" srcset="/img/loading.gif" lazyload title="损失函数"><br><img src="/papernotes/partial_fc/4.jpg" srcset="/img/loading.gif" lazyload title="损失函数"></p>
+<p>实验结果表明PPRN下样本与聚类中心的平均余弦距离最短。</p>
+<h2 id="分布式近似"><a href="#分布式近似" class="headerlink" title="分布式近似"></a>分布式近似</h2><ul>
+<li>权重矩阵W (d*C) 被分为k部分 [w1; w2; … ; wk] 其中k为GPU数量。对于样本xi，其label为yi，那么该样本的聚类中心为W的第yi列。那么当前GPU的正类中心即可得到，用w^p_i代表（batch size不为1，因此w^p_i也不止一个）</li>
+<li>根据上面的信息，每个GPU上的类中心总数为|wi|（wi的数量），正类中心总数为|w^p_i|（w^p_i的数量），然后负类中心的数量si通过随机采样得到，si=(|wi|-|w^p_i|)*r，r为PPRN的采样率。</li>
+<li>最后，我们将所有类中心进行softmax计算，Ws=[Wp, Wn]=[w^p_1, w^p_2, …, w^p_k, w^n_1, …, w^n_k]，实际上Ws是在每张GPU上进行本地采样得到</li>
+</ul>
+<p><img src="/papernotes/partial_fc/5.jpg" srcset="/img/loading.gif" lazyload title="损失函数"></p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><p><a target="_blank" rel="noopener" href="https://github.com/deepinsight/insightface/blob/master/recognition/arcface_torch/partial_fc_v2.py">https://github.com/deepinsight/insightface/blob/master/recognition/arcface_torch/partial_fc_v2.py</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> math<br><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">Callable</span><br><br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> distributed<br><span class="hljs-keyword">from</span> torch.nn.functional <span class="hljs-keyword">import</span> linear, normalize<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">PartialFC_V2</span>(torch.nn.Module):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    https://arxiv.org/abs/2203.15565</span><br><span class="hljs-string">    A distributed sparsely updating variant of the FC layer, named Partial FC (PFC).</span><br><span class="hljs-string">    When sample rate less than 1, in each iteration, positive class centers and a random subset of</span><br><span class="hljs-string">    negative class centers are selected to compute the margin-based softmax loss, all class</span><br><span class="hljs-string">    centers are still maintained throughout the whole training process, but only a subset is</span><br><span class="hljs-string">    selected and updated in each iteration.</span><br><span class="hljs-string">    .. note::</span><br><span class="hljs-string">        When sample rate equal to 1, Partial FC is equal to model parallelism(default sample rate is 1).</span><br><span class="hljs-string">    Example:</span><br><span class="hljs-string">    --------</span><br><span class="hljs-string">    &gt;&gt;&gt; module_pfc = PartialFC(embedding_size=512, num_classes=8000000, sample_rate=0.2)</span><br><span class="hljs-string">    &gt;&gt;&gt; for img, labels in data_loader:</span><br><span class="hljs-string">    &gt;&gt;&gt;     embeddings = net(img)</span><br><span class="hljs-string">    &gt;&gt;&gt;     loss = module_pfc(embeddings, labels)</span><br><span class="hljs-string">    &gt;&gt;&gt;     loss.backward()</span><br><span class="hljs-string">    &gt;&gt;&gt;     optimizer.step()</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    _version = <span class="hljs-number">2</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params"></span><br><span class="hljs-params">        self,</span><br><span class="hljs-params">        margin_loss: <span class="hljs-type">Callable</span>,</span><br><span class="hljs-params">        embedding_size: <span class="hljs-built_in">int</span>,</span><br><span class="hljs-params">        num_classes: <span class="hljs-built_in">int</span>,</span><br><span class="hljs-params">        sample_rate: <span class="hljs-built_in">float</span> = <span class="hljs-number">1.0</span>,</span><br><span class="hljs-params">        fp16: <span class="hljs-built_in">bool</span> = <span class="hljs-literal">False</span>,</span><br><span class="hljs-params">    </span>):<br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        Paramenters:</span><br><span class="hljs-string">        -----------</span><br><span class="hljs-string">        embedding_size: int</span><br><span class="hljs-string">            The dimension of embedding, required</span><br><span class="hljs-string">        num_classes: int</span><br><span class="hljs-string">            Total number of classes, required</span><br><span class="hljs-string">        sample_rate: float</span><br><span class="hljs-string">            The rate of negative centers participating in the calculation, default is 1.0.</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        <span class="hljs-built_in">super</span>(PartialFC_V2, <span class="hljs-variable language_">self</span>).__init__()<br>        <span class="hljs-keyword">assert</span> (<br>            distributed.is_initialized()<br>        ), <span class="hljs-string">&quot;must initialize distributed before create this&quot;</span><br>        <span class="hljs-variable language_">self</span>.rank = distributed.get_rank()<br>        <span class="hljs-variable language_">self</span>.world_size = distributed.get_world_size()<br><br>        <span class="hljs-variable language_">self</span>.dist_cross_entropy = DistCrossEntropy()<br>        <span class="hljs-variable language_">self</span>.embedding_size = embedding_size<br>        <span class="hljs-variable language_">self</span>.sample_rate: <span class="hljs-built_in">float</span> = sample_rate<br>        <span class="hljs-variable language_">self</span>.fp16 = fp16<br>        <br>        <span class="hljs-comment"># 每张卡单独储存子矩阵Wk</span><br>        <span class="hljs-variable language_">self</span>.num_local: <span class="hljs-built_in">int</span> = num_classes // <span class="hljs-variable language_">self</span>.world_size + <span class="hljs-built_in">int</span>(<br>            <span class="hljs-variable language_">self</span>.rank &lt; num_classes % <span class="hljs-variable language_">self</span>.world_size<br>        )<br>        <span class="hljs-variable language_">self</span>.class_start: <span class="hljs-built_in">int</span> = num_classes // <span class="hljs-variable language_">self</span>.world_size * <span class="hljs-variable language_">self</span>.rank + <span class="hljs-built_in">min</span>(<br>            <span class="hljs-variable language_">self</span>.rank, num_classes % <span class="hljs-variable language_">self</span>.world_size<br>        )<br>        <span class="hljs-variable language_">self</span>.num_sample: <span class="hljs-built_in">int</span> = <span class="hljs-built_in">int</span>(<span class="hljs-variable language_">self</span>.sample_rate * <span class="hljs-variable language_">self</span>.num_local)<br>        <span class="hljs-variable language_">self</span>.last_batch_size: <span class="hljs-built_in">int</span> = <span class="hljs-number">0</span><br><br>        <span class="hljs-variable language_">self</span>.is_updated: <span class="hljs-built_in">bool</span> = <span class="hljs-literal">True</span><br>        <span class="hljs-variable language_">self</span>.init_weight_update: <span class="hljs-built_in">bool</span> = <span class="hljs-literal">True</span><br>        <span class="hljs-comment"># 每张卡的子矩阵权重</span><br>        <span class="hljs-variable language_">self</span>.weight = torch.nn.Parameter(torch.normal(<span class="hljs-number">0</span>, <span class="hljs-number">0.01</span>, (<span class="hljs-variable language_">self</span>.num_local, embedding_size)))<br><br>        <span class="hljs-comment"># margin_loss</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(margin_loss, <span class="hljs-type">Callable</span>):<br>            <span class="hljs-comment"># 边缘softmax定义，如ArcFace Loss</span><br>            <span class="hljs-variable language_">self</span>.margin_softmax = margin_loss<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">raise</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">sample</span>(<span class="hljs-params">self, labels, index_positive</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">            This functions will change the value of labels</span><br><span class="hljs-string">            Parameters:</span><br><span class="hljs-string">            -----------</span><br><span class="hljs-string">            labels: torch.Tensor</span><br><span class="hljs-string">                pass</span><br><span class="hljs-string">            index_positive: torch.Tensor</span><br><span class="hljs-string">                pass</span><br><span class="hljs-string">            optimizer: torch.optim.Optimizer</span><br><span class="hljs-string">                pass</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        <span class="hljs-keyword">with</span> torch.no_grad():<br>            <span class="hljs-comment"># 获取正样本标签集合</span><br>            positive = torch.unique(labels[index_positive], <span class="hljs-built_in">sorted</span>=<span class="hljs-literal">True</span>).cuda()<br>            <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.num_sample - positive.size(<span class="hljs-number">0</span>) &gt;= <span class="hljs-number">0</span>:<br>                <span class="hljs-comment"># 在所有本地类别中（num_local），生成一个随机分布（perm）</span><br>                perm = torch.rand(size=[<span class="hljs-variable language_">self</span>.num_local]).cuda()<br>                <span class="hljs-comment"># 将正样本类别的分数赋值为2.0（大于随机[0,1)），保证正类别一定被选中</span><br>                perm[positive] = <span class="hljs-number">2.0</span><br>                <span class="hljs-comment"># 用topk选取分数最高的num_sample个类别</span><br>                index = torch.topk(perm, k=<span class="hljs-variable language_">self</span>.num_sample)[<span class="hljs-number">1</span>].cuda()<br>                <span class="hljs-comment"># 再排序（sort），得到最终采样类别下标index</span><br>                index = index.sort()[<span class="hljs-number">0</span>].cuda()<br>            <span class="hljs-keyword">else</span>:<br>                index = positive<br>            <span class="hljs-variable language_">self</span>.weight_index = index<br><br>            <span class="hljs-comment"># searchsorted返回labels[index_positive]在index中的插入位置，即在采样类别的下标</span><br>            labels[index_positive] = torch.searchsorted(index, labels[index_positive])<br><br>        <span class="hljs-comment"># 返回采样权重，即聚类中心</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.weight[<span class="hljs-variable language_">self</span>.weight_index]<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params"></span><br><span class="hljs-params">        self,</span><br><span class="hljs-params">        local_embeddings: torch.Tensor,</span><br><span class="hljs-params">        local_labels: torch.Tensor,</span><br><span class="hljs-params">    </span>):<br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        Parameters:</span><br><span class="hljs-string">        ----------</span><br><span class="hljs-string">        local_embeddings: torch.Tensor</span><br><span class="hljs-string">            feature embeddings on each GPU(Rank).</span><br><span class="hljs-string">        local_labels: torch.Tensor</span><br><span class="hljs-string">            labels on each GPU(Rank).</span><br><span class="hljs-string">        Returns:</span><br><span class="hljs-string">        -------</span><br><span class="hljs-string">        loss: torch.Tensor</span><br><span class="hljs-string">            pass</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        <span class="hljs-comment"># 格式转化</span><br>        local_labels.squeeze_()<br>        local_labels = local_labels.long()<br><br>        <span class="hljs-comment"># 分布式训练确保batch size相同</span><br>        batch_size = local_embeddings.size(<span class="hljs-number">0</span>)<br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.last_batch_size == <span class="hljs-number">0</span>:<br>            <span class="hljs-variable language_">self</span>.last_batch_size = batch_size<br>        <span class="hljs-keyword">assert</span> <span class="hljs-variable language_">self</span>.last_batch_size == batch_size, (<br>            <span class="hljs-string">f&quot;last batch size do not equal current batch size: <span class="hljs-subst">&#123;self.last_batch_size&#125;</span> vs <span class="hljs-subst">&#123;batch_size&#125;</span>&quot;</span>)<br><br>        <span class="hljs-comment"># 聚合所有GPU上的embedding和label</span><br>        _gather_embeddings = [<br>            torch.zeros((batch_size, <span class="hljs-variable language_">self</span>.embedding_size)).cuda()<br>            <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-variable language_">self</span>.world_size)<br>        ]<br>        _gather_labels = [<br>            torch.zeros(batch_size).long().cuda() <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-variable language_">self</span>.world_size)<br>        ]<br>        _list_embeddings = AllGather(local_embeddings, *_gather_embeddings)<br>        distributed.all_gather(_gather_labels, local_labels)<br><br>        embeddings = torch.cat(_list_embeddings)<br>        labels = torch.cat(_gather_labels)<br><br>        <span class="hljs-comment"># 计算哪些样本的类别属于本地负责范围，不属于本地的标签置为-1，这些样本本轮不参与本地权重计算</span><br>        labels = labels.view(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<br>        index_positive = (<span class="hljs-variable language_">self</span>.class_start &lt;= labels) &amp; (<br>            labels &lt; <span class="hljs-variable language_">self</span>.class_start + <span class="hljs-variable language_">self</span>.num_local<br>        )<br>        labels[~index_positive] = -<span class="hljs-number">1</span><br>        <span class="hljs-comment"># 属于本地的标签编号减去 class_start，映射到 [0, num_local) 区间</span><br>        labels[index_positive] -= <span class="hljs-variable language_">self</span>.class_start<br><br>        <span class="hljs-comment"># 采样权重，即聚类中心数量</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.sample_rate &lt; <span class="hljs-number">1</span>:<br>            weight = <span class="hljs-variable language_">self</span>.sample(labels, index_positive)<br>        <span class="hljs-keyword">else</span>:<br>            weight = <span class="hljs-variable language_">self</span>.weight<br><br>        <span class="hljs-comment"># 对embedding和权重W进行归一化，并计算点积</span><br>        <span class="hljs-keyword">with</span> torch.cuda.amp.autocast(<span class="hljs-variable language_">self</span>.fp16):<br>            norm_embeddings = normalize(embeddings)<br>            norm_weight_activated = normalize(weight)<br>            <span class="hljs-comment"># 其实就是矩阵相乘，得到点积矩阵</span><br>            logits = linear(norm_embeddings, norm_weight_activated)<br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.fp16:<br>            logits = logits.<span class="hljs-built_in">float</span>()<br>        <span class="hljs-comment"># clamp 在 [-1, 1]，防止后续数值爆炸</span><br>        logits = logits.clamp(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<br><br>        <span class="hljs-comment"># 边缘softmax，如ArcFace</span><br>        logits = <span class="hljs-variable language_">self</span>.margin_softmax(logits, labels)<br>        <span class="hljs-comment"># 计算分布式环境下的交叉熵损失，定义见下面</span><br>        loss = <span class="hljs-variable language_">self</span>.dist_cross_entropy(logits, labels)<br>        <span class="hljs-keyword">return</span> loss<br><br><span class="hljs-comment"># 损失函数定义</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">DistCrossEntropyFunc</span>(torch.autograd.Function):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    CrossEntropy loss is calculated in parallel, allreduce denominator into single gpu and calculate softmax.</span><br><span class="hljs-string">    Implemented of ArcFace (https://arxiv.org/pdf/1801.07698v1.pdf):</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br><br><span class="hljs-meta">    @staticmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">ctx, logits: torch.Tensor, label: torch.Tensor</span>):<br>        <span class="hljs-string">&quot;&quot;&quot; &quot;&quot;&quot;</span><br>        batch_size = logits.size(<span class="hljs-number">0</span>)<br>        <span class="hljs-comment"># for numerical stability</span><br>        max_logits, _ = torch.<span class="hljs-built_in">max</span>(logits, dim=<span class="hljs-number">1</span>, keepdim=<span class="hljs-literal">True</span>)<br>        <span class="hljs-comment"># local to global</span><br>        distributed.all_reduce(max_logits, distributed.ReduceOp.MAX)<br>        logits.sub_(max_logits)<br>        logits.exp_()<br>        sum_logits_exp = torch.<span class="hljs-built_in">sum</span>(logits, dim=<span class="hljs-number">1</span>, keepdim=<span class="hljs-literal">True</span>)<br>        <span class="hljs-comment"># local to global</span><br>        distributed.all_reduce(sum_logits_exp, distributed.ReduceOp.SUM)<br>        logits.div_(sum_logits_exp)<br>        index = torch.where(label != -<span class="hljs-number">1</span>)[<span class="hljs-number">0</span>]<br>        <span class="hljs-comment"># loss</span><br>        loss = torch.zeros(batch_size, <span class="hljs-number">1</span>, device=logits.device)<br>        loss[index] = logits[index].gather(<span class="hljs-number">1</span>, label[index])<br>        distributed.all_reduce(loss, distributed.ReduceOp.SUM)<br>        ctx.save_for_backward(index, logits, label)<br>        <span class="hljs-keyword">return</span> loss.clamp_min_(<span class="hljs-number">1e-30</span>).log_().mean() * (-<span class="hljs-number">1</span>)<br><br><span class="hljs-meta">    @staticmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">backward</span>(<span class="hljs-params">ctx, loss_gradient</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        Args:</span><br><span class="hljs-string">            loss_grad (torch.Tensor): gradient backward by last layer</span><br><span class="hljs-string">        Returns:</span><br><span class="hljs-string">            gradients for each input in forward function</span><br><span class="hljs-string">            `None` gradients for one-hot label</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        (<br>            index,<br>            logits,<br>            label,<br>        ) = ctx.saved_tensors<br>        batch_size = logits.size(<span class="hljs-number">0</span>)<br>        one_hot = torch.zeros(<br>            size=[index.size(<span class="hljs-number">0</span>), logits.size(<span class="hljs-number">1</span>)], device=logits.device<br>        )<br>        one_hot.scatter_(<span class="hljs-number">1</span>, label[index], <span class="hljs-number">1</span>)<br>        logits[index] -= one_hot<br>        logits.div_(batch_size)<br>        <span class="hljs-keyword">return</span> logits * loss_gradient.item(), <span class="hljs-literal">None</span><br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">DistCrossEntropy</span>(torch.nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-built_in">super</span>(DistCrossEntropy, <span class="hljs-variable language_">self</span>).__init__()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, logit_part, label_part</span>):<br>        <span class="hljs-keyword">return</span> DistCrossEntropyFunc.apply(logit_part, label_part)<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AllGatherFunc</span>(torch.autograd.Function):<br>    <span class="hljs-string">&quot;&quot;&quot;AllGather op with gradient backward&quot;&quot;&quot;</span><br><br><span class="hljs-meta">    @staticmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">ctx, tensor, *gather_list</span>):<br>        gather_list = <span class="hljs-built_in">list</span>(gather_list)<br>        distributed.all_gather(gather_list, tensor)<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">tuple</span>(gather_list)<br><br><span class="hljs-meta">    @staticmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">backward</span>(<span class="hljs-params">ctx, *grads</span>):<br>        grad_list = <span class="hljs-built_in">list</span>(grads)<br>        rank = distributed.get_rank()<br>        grad_out = grad_list[rank]<br><br>        dist_ops = [<br>            distributed.reduce(grad_out, rank, distributed.ReduceOp.SUM, async_op=<span class="hljs-literal">True</span>)<br>            <span class="hljs-keyword">if</span> i == rank<br>            <span class="hljs-keyword">else</span> distributed.reduce(<br>                grad_list[i], i, distributed.ReduceOp.SUM, async_op=<span class="hljs-literal">True</span><br>            )<br>            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(distributed.get_world_size())<br>        ]<br>        <span class="hljs-keyword">for</span> _op <span class="hljs-keyword">in</span> dist_ops:<br>            _op.wait()<br><br>        grad_out *= <span class="hljs-built_in">len</span>(grad_list)  <span class="hljs-comment"># cooperate with distributed loss function</span><br>        <span class="hljs-keyword">return</span> (grad_out, *[<span class="hljs-literal">None</span> <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(grad_list))])<br><br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" class="category-chain-item">论文笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="print-no-link">#大模型</a>
+      
+        <a href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81/" class="print-no-link">#多模态</a>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87/" class="print-no-link">#论文</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Partial_FC</div>
+      <div>https://guokent.github.io/papernotes/partial_fc/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Kent</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/papernotes/tulip/" title="TULIP">
+                        <span class="hidden-mobile">TULIP</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
